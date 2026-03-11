@@ -9,7 +9,7 @@ def get_links():
         'href': '/',
         'icon': 'fa-house',
     }, {
-        'name': 'Cars',
+        'name': 'Recipes',
         'href': '/cars',
         'icon': 'fa-car',
     }, {
