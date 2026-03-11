@@ -1,0 +1,29 @@
+{% extends "main/layout/layout.html" %}
+
+{% block title %}Forum{% endblock %}
+
+{% block content %}
+
+<h1>Forum</h1>
+
+<a class="btn btn-primary mb-3" href="/forum/add/">Add post</a>
+
+{% for post in posts %}
+
+<div class="card mb-3">
+    <div class="card-body">
+
+        <h5 class="card-title">{{ post.title }}</h5>
+
+        <p class="card-text">{{ post.body }}</p>
+
+        <small class="text-muted">
+            {{ post.published_at }}
+        </small>
+
+    </div>
+</div>
+
+{% endfor %}
+
+{% endblock %}

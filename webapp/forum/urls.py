@@ -1,8 +1,10 @@
 from django.urls import path
-from . import views # from current folder import the neighbour file views for views methods usage
+from . import views
 
 urlpatterns = [
-    path('', views.index),
-    path('frequent_questions', views.frequent_questions)
+    path('', views.forum, name='forum'),
+    path('index/', views.index),
+    path('frequent_questions/', views.frequent_questions),
+    path('add/', views.add_post, name='add_post'),
 ]
  

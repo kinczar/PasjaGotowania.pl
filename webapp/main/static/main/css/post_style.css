@@ -1,0 +1,52 @@
+.main-content {
+    padding: 40px;
+}
+
+/* Nagłówek */
+.main-content h1 {
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+/* Formularz */
+.form-container {
+    max-width: 700px;
+}
+
+/* Label */
+.form-container label {
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+/* Inputy */
+.form-container input,
+.form-container textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #ced4da;
+    margin-bottom: 20px;
+    transition: border 0.2s;
+}
+
+/* focus */
+.form-container input:focus,
+.form-container textarea:focus {
+    border-color: #0d6efd;
+    outline: none;
+}
+
+/* przycisk */
+.btn-submit {
+    background: #198754;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+.btn-submit:hover {
+    background: #157347;
+}

@@ -25,12 +25,16 @@ def get_links():
         'href': '/news/',
         'icon': 'fa-newspaper',
     },{
-        'name': 'Add news',
+        'name': 'Add Post',
         'href': '/news/create',
         'icon': 'fa-plus',
     },{
         'name': 'Forum',
         'href': '/forum',
         'icon': 'fa-comment', #look for your icon here https://fontawesome.com/search?ic=free
-    }]
+    },{
+        'name': 'Add post',
+        'href': '/forum/add/',
+        'icon': 'fa-plus',
+       }]
     
