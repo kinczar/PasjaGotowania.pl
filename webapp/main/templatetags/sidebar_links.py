@@ -21,14 +21,6 @@ def get_links():
         'href': '/about',
         'icon': 'fa-address-card',
     },{
-        'name': 'News',
-        'href': '/news/',
-        'icon': 'fa-newspaper',
-    },{
-        'name': 'Add Post',
-        'href': '/news/create',
-        'icon': 'fa-plus',
-    },{
         'name': 'Forum',
         'href': '/forum',
         'icon': 'fa-comment', #look for your icon here https://fontawesome.com/search?ic=free
@@ -36,5 +28,5 @@ def get_links():
         'name': 'Add post',
         'href': '/forum/add/',
         'icon': 'fa-plus',
-       }]
+    }]
     

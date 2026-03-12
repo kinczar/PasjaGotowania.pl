@@ -4,22 +4,73 @@
 
 {% block content %}
 
-<h1>Forum</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="mb-0">Forum</h1>
 
-<a class="btn btn-primary mb-3" href="/forum/add/">Add post</a>
+    <a class="btn btn-success" href="/forum/add/">
+        + Add post
+    </a>
+</div>
 
 {% for post in posts %}
 
-<div class="card mb-3">
+<div class="card mb-4 shadow-sm">
     <div class="card-body">
 
-        <h5 class="card-title">{{ post.title }}</h5>
+        <div class="row">
 
-        <p class="card-text">{{ post.body }}</p>
+            <!-- LEWA STRONA - ZDJĘCIE -->
+            {% if post.image %}
+            <div class="col-md-4">
+                <img src="{{ post.image.url }}"
+                     class="img-fluid rounded"
+                     style="width:100%; height:250px; object-fit:cover;">
+            </div>
+            {% endif %}
 
-        <small class="text-muted">
-            {{ post.published_at }}
-        </small>
+            <!-- PRAWA STRONA - TREŚĆ -->
+            <div class="col-md-8">
+
+                <!-- UŻYTKOWNIK -->
+                <div class="d-flex align-items-center mb-2">
+
+                    <div style="width:40px;height:40px;background:#ddd;border-radius:50%;margin-right:10px;"></div>
+
+                    <div>
+                        <strong>{{ post.author.username }}</strong><br>
+                        <small class="text-muted">{{ post.published_at }}</small>
+                    </div>
+
+                </div>
+
+                <h5 class="mb-2">{{ post.title }}</h5>
+
+                <p class="card-text">
+                    {{ post.body }}
+                </p>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <!-- PRZYCISKI -->
+        <div class="d-flex gap-3">
+
+            <button class="btn btn-outline-primary btn-sm">
+                <i class="fa-solid fa-thumbs-up"></i> Like
+            </button>
+
+            <button class="btn btn-outline-secondary btn-sm">
+                <i class="fa-solid fa-comment"></i> Comment
+            </button>
+
+            <button class="btn btn-outline-success btn-sm">
+                <i class="fa-solid fa-star"></i> Save recipe
+            </button>
+
+        </div>
 
     </div>
 </div>

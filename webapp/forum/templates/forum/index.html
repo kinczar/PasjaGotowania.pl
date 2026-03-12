@@ -1,10 +1,16 @@
 {% extends 'main/layout/layout.html' %}
 
-{% block title%}Forum{% endblock %}
+{% block title %}Forum{% endblock %}
 
-{% block content%}
-    <h1>Forum</h1>
-    <div class="d-flex flex-column gap-4">
+{% block content %}
+<h1>Forum</h1>
 
-    </div>
+<div class="d-flex flex-column gap-4">
+
+</div>
+
+<a href="{% url 'add_post' %}" class="btn btn-primary add-post-btn">
+    Add post
+</a>
+
 {% endblock %}

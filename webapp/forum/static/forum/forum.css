@@ -18,3 +18,11 @@
 .floating-add-btn:hover {
     background-color: #218838;
 }
+
+.post-image {
+    width: 100%;
+    height: 350px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
