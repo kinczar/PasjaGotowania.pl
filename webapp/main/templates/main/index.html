@@ -1,18 +1,142 @@
 {% extends 'main/layout/layout.html' %}
 
-{% block title%}Homepage{% endblock %}
+{% block title %}Strona Główna - Pasja Gotowania{% endblock %}
 
-{% block content%}
-    <h1>Homepage</h1>
-    <div class="container">
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque finibus non dolor non sollicitudin. Vivamus augue lectus, congue vitae placerat eu, eleifend quis sapien. Ut ut neque iaculis, egestas orci non, mattis ligula. Donec sed gravida elit. In blandit sapien ac tortor accumsan, at volutpat lacus bibendum. Nulla facilisi. Praesent interdum eros rutrum elementum feugiat. Nunc vitae arcu sit amet felis placerat aliquet. Pellentesque venenatis libero in eleifend ultrices. Etiam consectetur tempus turpis, ut elementum dolor. Nulla ut ornare tortor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Pellentesque ultrices viverra sollicitudin. Nulla magna nisl, interdum in commodo ac, consectetur eu elit.</p>
-        <p>Aliquam erat volutpat. Vivamus ornare volutpat enim, non efficitur lectus condimentum ut. Fusce nec nunc molestie, malesuada lacus vitae, tristique nibh. Etiam aliquet porta felis. Morbi pharetra rhoncus mauris eget egestas. Phasellus ut augue eu dui interdum porttitor et ut turpis. Vivamus nunc libero, porttitor eu ante ac, tincidunt condimentum dui. Pellentesque vel nisl a risus luctus vulputate a id libero. Nulla venenatis nunc et fermentum malesuada. Proin in leo auctor, vestibulum quam eget, maximus dui. Fusce sagittis condimentum turpis quis volutpat. Etiam a nisi vitae ante elementum porta. Vestibulum congue luctus nunc, vel sagittis risus. In hac habitasse platea dictumst. Pellentesque iaculis sapien nisl, sollicitudin iaculis neque varius venenatis.</p>
-        <p>Suspendisse ut nisi posuere, lacinia ipsum a, pharetra tortor. Vestibulum dapibus facilisis eros, vitae elementum nulla mattis et. Duis sollicitudin ultricies felis, a finibus lacus lacinia ac. Maecenas suscipit justo justo, id lobortis mauris tempor ac. Fusce sodales feugiat elementum. Praesent vehicula eros pellentesque nisl iaculis, sed malesuada sapien pretium. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-        <p>Morbi dapibus, dui et euismod congue, lacus nunc consectetur eros, ut tincidunt arcu dui vitae urna. Curabitur eu tortor eget risus blandit ullamcorper. Etiam enim arcu, rhoncus a lorem sed, venenatis malesuada nibh. Maecenas et turpis nulla. Curabitur posuere laoreet posuere. Fusce rhoncus lectus quis ullamcorper interdum. Aenean finibus pretium massa vitae dictum.</p>
-        <p>Etiam vel massa orci. Integer id convallis turpis, vel feugiat quam. Ut pretium semper mauris, vitae eleifend mi pharetra vitae. Aliquam erat volutpat. Sed condimentum libero dolor, vitae semper quam dignissim sed. Nunc efficitur erat a urna interdum, ac tristique mauris dignissim. Maecenas vehicula semper enim, eu placerat ipsum posuere at. Sed eget dui in ante egestas varius at ut ligula. Fusce aliquam tortor feugiat, molestie velit id, sollicitudin urna.</p>
+{% block content %}
+<style>
+    .collage-bg {
+        position: fixed;
+        top: -5vh;
+        left: -5vw;
+        width: 110vw;
+        height: 110vh;
+        z-index: -2;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-auto-rows: 250px;
+        gap: 0;
+        background-color: #0f172a;
+    }
+
+    .collage-bg div {
+        background-size: cover;
+        background-position: center;
+        opacity: 0.35;
+        filter: grayscale(20%);
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.6);
+        z-index: -1;
+    }
+
+    .glass-card {
+        background: rgba(30, 41, 59, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 40px 20px;
+        color: white;
+        height: 100%;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: transform 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .glass-card:hover { transform: translateY(-5px); }
+    .glass-card i { font-size: 2.5rem; margin-bottom: 20px; color: #fff; }
+    .glass-card h3 { font-size: 1.4rem; font-weight: 700; margin-bottom: 15px; color: #fff; }
+    .glass-card p { color: #cbd5e1; font-size: 0.95rem; line-height: 1.6; margin-bottom: 25px; flex-grow: 1; }
+
+    .btn-custom {
+        background: #facc15;
+        color: #000;
+        font-weight: 600;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: auto;
+    }
+    .btn-custom:hover { background: #eab308; color: #000; }
+</style>
+
+<div class="collage-bg">
+    <div style="background-image: url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1499028203764-866927b112d3?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1482049016688-2d3e1b311543?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1495195134817-a169d0d33261?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1460306855393-0410f61241c7?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1543353071-087092ec393a?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1476224203421-9ac39bcb3327?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1478145046317-39f10e56b5e9?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1484723091791-001e8557b2e9?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1414235077428-33898dd14582?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1529042410759-befb1204b468?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1493770348161-369560ae357d?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1455619452474-d2be8b1e70cd?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1481070555726-e2fe83477d4a?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1553621042-f6e147245754?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=400&q=80');"></div>
+    <div style="background-image: url('https://images.unsplash.com/photo-1528625245617-91921319c5c9?w=400&q=80');"></div>
+</div>
+<div class="overlay"></div>
+
+<div class="container py-5 position-relative" style="min-height: 85vh; display: flex; flex-direction: column; justify-content: center; z-index: 1;">
+    <div class="row g-4 align-items-stretch">
+
+        <div class="col-md-4">
+            <div class="glass-card">
+                <i class="fa-solid fa-comments"></i>
+                <h3>Forum Kulinarne</h3>
+                <p>Wylej swoje żale, gdy ciasto znów opadnie. Dziel się kulinarnymi traumami i znajdź wsparcie u innych.</p>
+                <a href="/forum" class="btn-custom">Dołącz do dyskusji</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card">
+                <i class="fa-solid fa-utensils"></i>
+                <h3>Odkryj Nowe Przepisy</h3>
+                <p>Przepisy na comfort food, które zjesz o 3 w nocy. Od szybkich obiadów po wykwintne desery, krok po kroku.</p>
+                <a href="/recipes" class="btn-custom">Zobacz przepisy</a>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="glass-card">
+                <i class="fa-solid fa-apple-whole"></i> <i class="fa-solid fa-heart"></i>
+                <h3>Sekrety Zdrowia & Urody</h3>
+                <p>Dowiedz się o planowaniu posiłków. Poczuj się wspaniale (lub przynajmniej udawaj przed znajomymi, że tak jest).</p>
+            </div>
+        </div>
+
     </div>
 
-    <button class="btn btn-warning">Go to about us page</button>
-
-    {% include 'main/test.html' %}
+    <div class="text-center mt-5 text-light opacity-50" style="font-size: 0.8rem;">
+        {% include 'main/test.html' %}
+    </div>
+</div>
 {% endblock %}
