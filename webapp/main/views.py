@@ -89,3 +89,26 @@ def logout_user(request):
     logout(request)
      
     return redirect('home')
+
+def recipes(request):
+    query = request.GET.get("q")
+
+    recipes_list = [
+        "Pizza Margherita",
+        "Pepperoni Pizza",
+        "Spaghetti Carbonara",
+        "Caesar Salad",
+        "Chocolate Cake"
+    ]
+
+    results = []
+
+    if query:
+        for recipe in recipes_list:
+            if query.lower() in recipe.lower():
+                results.append(recipe)
+
+    return render(request, template_name='main/recipes.html', context={
+        "results": results,
+        "query": query
+    })

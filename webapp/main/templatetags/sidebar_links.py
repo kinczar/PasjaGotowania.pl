@@ -10,8 +10,8 @@ def get_links():
         'icon': 'fa-house',
     }, {
         'name': 'Recipes',
-        'href': '/cars',
-        'icon': 'fa-car',
+        'href': '/recipes',
+        'icon': 'fa-utensils',
     }, {
         'name': 'Contact',
         'href': '/contact',
