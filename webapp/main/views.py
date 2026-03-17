@@ -7,6 +7,8 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages #to show message back for errors
 from django.contrib.auth.decorators import login_required
 
+from .models import Recipe
+
 # Create your views here.
 def index(request):
     return render(request, 'main/index.html')
@@ -92,23 +94,12 @@ def logout_user(request):
 
 def recipes(request):
     query = request.GET.get("q")
-
-    recipes_list = [
-        "Pizza Margherita",
-        "Pepperoni Pizza",
-        "Spaghetti Carbonara",
-        "Caesar Salad",
-        "Chocolate Cake"
-    ]
-
     results = []
 
     if query:
-        for recipe in recipes_list:
-            if query.lower() in recipe.lower():
-                results.append(recipe)
+        results = Recipe.objects.filter(title__icontains=query)
 
-    return render(request, template_name='main/recipes.html', context={
+    return render(request, "main/recipes.html", {
+        "query": query,
         "results": results,
-        "query": query
     })
