@@ -100,11 +100,11 @@
         border-radius: 8px;
         cursor: pointer;
         transition: 0.2s ease;
-}
+    }
 
     .category-btn:hover {
         background: rgba(255,255,255,0.16);
-}
+    }
 
     .results-box {
         margin-top: 35px;
@@ -127,6 +127,32 @@
 
     .results-box li {
         margin-bottom: 8px;
+    }
+
+    .recipe-result-item {
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(255,255,255,0.12);
+    }
+
+    .recipe-result-item:last-child {
+        border-bottom: none;
+    }
+
+    .recipe-result-item h4 {
+        margin: 0 0 8px 0;
+        color: #ffffff;
+        font-size: 1.2rem;
+    }
+
+    .recipe-result-item p {
+        margin: 0 0 8px 0;
+        color: #cbd5e1;
+    }
+
+    .recipe-result-item span {
+        color: #facc15;
+        font-size: 0.95rem;
+        font-weight: 500;
     }
 </style>
 
@@ -158,16 +184,20 @@
             <button class="category-btn" type="button">🍰 Desery</button>
         </div>
 
-        {% if results %}
-        <div class="results-box">
-            <h3>Wyniki wyszukiwania</h3>
-            <ul>
-                {% for recipe in results %}
-                    <li>{{ recipe }}</li>
-                {% endfor %}
-            </ul>
+{% if results %}
+<div class="results-box">
+    <h3>Wyniki wyszukiwania</h3>
+
+    {% for recipe in results %}
+        <div class="recipe-result-item">
+            <h4>{{ recipe.title }}</h4>
+            <p>{{ recipe.description }}</p>
+            <span>Kategoria: {{ recipe.category }}</span>
         </div>
-        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
     </div>
 </div>
 {% endblock %}
