@@ -11,13 +11,26 @@
     <hr>
     <ul class="nav nav-pills flex-column mb-auto">
 
-        {% for link in links %}
-            <li class="nav-item">
-                <a href="{{ link.href }}" class="nav-link {% if request.path == link.href %}active{% else %}text-white{% endif %}" aria-current="page">
-                    <i class="fa-solid {{ link.icon }}"></i>&nbsp;<span>{{ link.name }}</span>
-                </a>
-            </li>
-        {% endfor %}
+      <!--naprawilam to, ze zakladka "forum" nie podswietlala sie na niebiesko-->
+{% for link in links %}
+    <li class="nav-item">
+
+    <a href="{{ link.href }}"
+    class="nav-link
+    {% if request.path|cut:'/' == link.href|cut:'/' %}
+      active
+    {% else %}
+      text-white
+    {% endif %}
+">
+
+    <i class="fa-solid {{ link.icon }}"></i>
+    <span>{{ link.name }}</span>
+
+    </a>
+
+    </li>
+{% endfor %}
         
     </ul>
     <hr>
