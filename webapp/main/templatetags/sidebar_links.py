@@ -12,14 +12,6 @@ def get_links():
         'name': 'Recipes',
         'href': '/recipes',
         'icon': 'fa-utensils',
-    }, {
-        'name': 'Contact',
-        'href': '/contact',
-        'icon': 'fa-paper-plane',
-    }, {
-        'name': 'About',
-        'href': '/about',
-        'icon': 'fa-address-card',
     },{
         'name': 'Forum',
         'href': '/forum',

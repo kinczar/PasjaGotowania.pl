@@ -4,35 +4,43 @@
 
 {% block content %}
 
-<div class="card shadow-sm">
-    <div class="card-body">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
 
-        <h2 class="mb-4">Add post</h2>
+            <div class="card shadow-sm">
+                <div class="card-body">
 
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
+                    <h2 class="mb-4 text-center">Add post</h2>
 
-            <div class="mb-3">
-                <label class="form-label">Post title</label>
-                {{ form.title }}
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label class="form-label">Post title</label>
+                            {{ form.title }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Post body</label>
+                            {{ form.body }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Image</label>
+                            {{ form.image }}
+                        </div>
+
+                        <button class="btn btn-success">
+                            Add post
+                        </button>
+
+                    </form>
+
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label">Post body</label>
-                {{ form.body }}
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Image</label>
-                {{ form.image }}
-            </div>
-
-            <button class="btn btn-success">
-                Add post
-            </button>
-
-        </form>
-
+        </div>
     </div>
 </div>
 
