@@ -8,9 +8,13 @@ class Post(models.Model):
     published_at = models.DateTimeField(auto_now_add=True)
     image = models.ImageField(upload_to='posts/', blank=True, null=True)
 
-    def get_absolute_url(self):
-        return f'/forum/{self.id}'
+    likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
+    saved_by = models.ManyToManyField(User, related_name='saved_posts', blank=True)
 
-    class Meta:
-        verbose_name = 'Post'
-        verbose_name_plural = 'Post'
+
+#model komentarza
+class Comment(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)

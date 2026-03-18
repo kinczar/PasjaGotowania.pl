@@ -73,19 +73,46 @@
         <!-- PRZYCISKI -->
         <div class="d-flex gap-3">
 
-            <button class="btn btn-outline-primary btn-sm">
-                <i class="fa-solid fa-thumbs-up"></i> Like
-            </button>
+        <a href="{% url 'like_post' post.id %}" class="btn btn-outline-primary btn-sm">
+            <i class="fa-solid fa-thumbs-up"></i>
+            Like ({{ post.likes.count }})
+        </a>
 
-            <button class="btn btn-outline-secondary btn-sm">
-                <i class="fa-solid fa-comment"></i> Comment
-            </button>
-
-            <button class="btn btn-outline-success btn-sm">
-                <i class="fa-solid fa-star"></i> Save recipe
-            </button>
+        <button class="btn btn-outline-success btn-sm">
+            <i class="fa-solid fa-star"></i> Save recipe
+        </button>
 
         </div>
+
+        <!--komentarze:-->
+        <details class="mt-2">
+
+                <summary style="cursor:pointer;">
+                    Komentarze
+                </summary>
+
+            <div class="p-3 bg-light rounded">
+
+                {% for comment in post.comments.all %}
+                    <div class="mb-2 p-2 border-bottom">
+                        <strong>{{ comment.author.username }}</strong><br>
+                        {{ comment.content }}
+                    </div>
+                {% empty %}
+                    <p class="text-muted">Brak komentarzy</p>
+                {% endfor %}
+
+                {% if user.is_authenticated %}
+                <form method="POST" action="{% url 'add_comment' post.id %}">
+                    {% csrf_token %}
+                    <textarea name="content" class="form-control mb-2" placeholder="Dodaj komentarz"></textarea>
+                    <button type="submit" class="btn btn-primary btn-sm">Dodaj</button>
+                </form>
+                {% endif %}
+
+            </div>
+
+        </details>
 
     </div>
 </div>
