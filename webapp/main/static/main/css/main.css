@@ -98,3 +98,28 @@ body {
     color: #6b7280;
     font-size: 14px;
 }
+
+.rating {
+    display: flex;
+    flex-direction: row-reverse;
+    gap: 5px;
+}
+
+.rating a {
+    color: #ccc; /* szare gwiazdki */
+    font-size: 20px;
+    transition: 0.2s;
+    text-decoration: none;
+}
+
+
+.rating a:hover,
+.rating a:hover ~ a {
+    color: gold;
+}
+
+/* hover od lewej */
+.rating a:hover i,
+.rating a:hover ~ a i {
+    color: gold;
+}
