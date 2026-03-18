@@ -1,7 +1,7 @@
 # Plik do definiowania widoków, które są renderowane za pomocą szablonizatora Jinja oraz wyświetlane w przeglądarce
 
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages #to show message back for errors
@@ -94,12 +94,23 @@ def logout_user(request):
 
 def recipes(request):
     query = request.GET.get("q")
+    category = request.GET.get("category")
     results = []
 
-    if query:
-        results = Recipe.objects.filter(title__icontains=query)
+    if query or category:
+        results = Recipe.objects.all()
+
+        if query:
+            results = results.filter(title__icontains=query)
+
+        if category:
+            results = results.filter(category__icontains=category)
 
     return render(request, "main/recipes.html", {
         "query": query,
         "results": results,
+        "category": category,
     })
+def recipe_detail(request, id):
+    recipe = get_object_or_404(Recipe, id=id)
+    return render(request, 'main/detail.html', {'recipe': recipe})
