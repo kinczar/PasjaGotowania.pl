@@ -1,4 +1,4 @@
-/*body {*/
+/* body {*/
 /*    background: #2c2c2c;*/
 /*}*/
 
@@ -63,4 +63,38 @@
 /*main .features p {*/
 /*    max-width: 400px;*/
 /*    margin: 20px auto;*/
-/*}*/
+/*} */
+
+/* tło strony */
+body {
+    background: #0f1724;
+}
+
+/* karta posta */
+.card {
+    background-color: #ffffff;
+    color: #1f2937;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    padding: 10px;
+}
+
+/* tytuł posta */
+.card-title {
+    font-weight: 600;
+    font-size: 20px;
+    color: #111827;
+}
+
+/* tekst posta */
+.card-text {
+    color: #374151;
+    font-size: 16px;
+}
+
+/* data / autor */
+.post-meta {
+    color: #6b7280;
+    font-size: 14px;
+}
