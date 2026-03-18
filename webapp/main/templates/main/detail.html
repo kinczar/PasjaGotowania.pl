@@ -1,0 +1,82 @@
+{% extends 'main/layout/layout.html' %}
+
+{% block title %}{{ recipe.title }} - Pasja Gotowania{% endblock %}
+
+{% block content %}
+<style>
+    body {
+        background: linear-gradient(135deg, #0f172a, #0b1120, #1e293b);
+    }
+
+    .detail-wrapper {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 40px 40px 180px;
+    }
+
+    .detail-card {
+        background: rgba(30, 41, 59, 0.75);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 12px;
+        padding: 40px 30px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .detail-card h1 {
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+    }
+
+    .detail-card p {
+        color: #cbd5e1;
+        line-height: 1.7;
+        margin-bottom: 16px;
+    }
+
+    .detail-label {
+        color: #facc15;
+        font-weight: 600;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 20px;
+        color: #facc15;
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+</style>
+
+<div class="detail-wrapper">
+    <div class="detail-card">
+        <h1>{{ recipe.title }}</h1>
+
+        <p><span class="detail-label">Opis:</span> {{ recipe.description }}</p>
+        <div>
+            <p class="detail-label">Składniki:</p>
+            <ul>
+                {% for item in recipe.ingredients.splitlines %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <p><span class="detail-label">Instrukcje:</span><br>{{ recipe.instructions|linebreaksbr }}</p>
+        <p><span class="detail-label">Kategoria:</span> {{ recipe.category }}</p>
+        <p><span class="detail-label">Czas przygotowania:</span> {{ recipe.prep_time }} min</p>
+
+        <a href="{% url 'recipes' %}" class="back-link">← Wróć do wyszukiwarki</a>
+    </div>
+</div>
+{% endblock %}

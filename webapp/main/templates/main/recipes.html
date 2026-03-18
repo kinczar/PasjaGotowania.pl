@@ -100,6 +100,18 @@
         border-radius: 8px;
         cursor: pointer;
         transition: 0.2s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .category-btn i {
+        margin-right: 8px;
+        font-size: 1rem;
+    }
+
+    .category-btn:hover {
+        background: rgba(255,255,255,0.15);
+        transform: translateY(-2px);
     }
 
     .category-btn:hover {
@@ -154,6 +166,17 @@
         font-size: 0.95rem;
         font-weight: 500;
     }
+
+    .recipe-link {
+        color: #ffffff;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .recipe-link:hover {
+        color: #facc15;
+    }
+
 </style>
 
 
@@ -178,10 +201,21 @@
         </form>
 
         <div class="categories">
-            <button class="category-btn" type="button">🍕 Pizza</button>
-            <button class="category-btn" type="button">🍝 Makarony</button>
-            <button class="category-btn" type="button">🥗 Sałatki</button>
-            <button class="category-btn" type="button">🍰 Desery</button>
+            <a href="?category=Pizza" class="category-btn">
+                <i class="fas fa-pizza-slice"></i> Pizza
+            </a>
+
+            <a href="?category=Makarony" class="category-btn">
+                <i class="fas fa-utensils"></i> Makarony
+            </a>
+
+            <a href="?category=Sałatki" class="category-btn">
+                <i class="fas fa-leaf"></i> Sałatki
+            </a>
+
+            <a href="?category=Desery" class="category-btn">
+                <i class="fas fa-ice-cream"></i> Desery
+            </a>
         </div>
 
 {% if results %}
@@ -190,7 +224,11 @@
 
     {% for recipe in results %}
         <div class="recipe-result-item">
-            <h4>{{ recipe.title }}</h4>
+            <h4>
+                <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-link">
+                    {{ recipe.title }}
+                </a>
+            </h4>
             <p>{{ recipe.description }}</p>
             <span>Kategoria: {{ recipe.category }}</span>
         </div>
