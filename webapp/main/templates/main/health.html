@@ -1,10 +1,69 @@
-{% extends 'main/layout/layout.html' %}
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <title>Zdrowie | PasjaGotowania</title>
+    <link rel="stylesheet" href="{% static 'main/css/health.css' %}">
+</head>
+<body>
 
-{% block title %}Zdrowie{% endblock %}
+<section class="hero">
+    <h1>Zdrowie w jedzeniu 🥗</h1>
+    <p>Sprawdź składniki i ich wpływ na organizm</p>
+</section>
 
-{% block content %}
+<section class="categories">
+    <h2>Kategorie składników</h2>
 
-<h1>Sekrety zdrowia</h1>
-<p>Tu będą porady</p>
+    <div class="grid">
 
-{% endblock %}
+        <div class="card">
+            <h3>🥕 Beta-karoten</h3>
+            <p>Wspiera wzrok i odporność</p>
+            <ul>
+                <li>Marchew</li>
+                <li>Bataty</li>
+                <li>Dynia</li>
+            </ul>
+            <p class="desc">Pomaga w zdrowiu skóry i oczu</p>
+        </div>
+
+        <div class="card">
+            <h3>🍇 Polifenole</h3>
+            <p>Silne antyoksydanty</p>
+            <ul>
+                <li>Granat</li>
+                <li>Winogrona</li>
+                <li>Jagody</li>
+            </ul>
+            <p class="desc">Chronią przed starzeniem i chorobami</p>
+        </div>
+
+        <div class="card">
+            <h3>🍊 Witamina C</h3>
+            <p>Wspiera odporność</p>
+            <ul>
+                <li>Grejpfrut</li>
+                <li>Pomarańcza</li>
+                <li>Cytryna</li>
+            </ul>
+            <p class="desc">Pomaga walczyć z infekcjami</p>
+        </div>
+
+        <div class="card">
+            <h3>🥑 Zdrowe tłuszcze</h3>
+            <p>Dobre dla serca</p>
+            <ul>
+                <li>Awokado</li>
+                <li>Orzechy</li>
+                <li>Oliwa z oliwek</li>
+            </ul>
+            <p class="desc">Wspierają pracę mózgu i serca</p>
+        </div>
+
+    </div>
+</section>
+
+</body>
+</html>
