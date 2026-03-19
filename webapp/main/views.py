@@ -114,3 +114,5 @@ def recipes(request):
 def recipe_detail(request, id):
     recipe = get_object_or_404(Recipe, id=id)
     return render(request, 'main/detail.html', {'recipe': recipe})
+def health(request):
+    return render(request, 'main/health.html')

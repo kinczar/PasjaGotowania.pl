@@ -15,6 +15,9 @@ urlpatterns = [
     path('login', views.login_user, name='login_user'),
     path('register', views.register, name='register_user'),
     path('logout', views.logout_user, name='logout_user'),
+
+    # 👇 TO DODAŁEŚ (twoja nowa podstrona)
+    path('health/', views.health, name='health'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
