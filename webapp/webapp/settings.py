@@ -11,6 +11,20 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+#baza danych 
+import os
+from dotenv import load_dotenv
+import cloudinary
+
+#zaladowuje zmienne środowiskowe dotyczące bazy danych i serwer plików
+load_dotenv()
+
+#ustawienie połączenia z aplikacją do przechowywania zdjęć(dodanych w postach)
+cloudinary.config(
+    cloud_name = os.getenv('CLOUD_NAME'),
+    api_key = os.getenv('API_KEY'),
+    api_secret = os.getenv('API_SECRET')
+)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,12 +39,16 @@ SECRET_KEY = 'django-insecure-jnscosjmvqy4^59lzts0s_yct#b8@9_ex)%08%6v_%ek#hm3ry
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True #show errors during program usage
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    # aplikacje cloudinary (przechowywanie zdjęć)
+    'cloudinary_storage',
+    'cloudinary',
+    
     # default apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,12 +97,28 @@ WSGI_APPLICATION = 'webapp.wsgi.application' #created as an implementation-neutr
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
+DATABASES = { 
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
     }
 }
+
+#TO JEST DO DODAWANIA ZDJĘĆ DO BAZY DANYCH
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUD_NAME'),
+    'API_KEY': os.getenv('API_KEY'),
+    'API_SECRET': os.getenv('API_SECRET'),
+}
+
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 
 
 # Password validation
@@ -132,6 +166,4 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login'
-# MEDIA_URL and MEDIA_ROOT settings for handling media files (like images) uploaded by users
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'

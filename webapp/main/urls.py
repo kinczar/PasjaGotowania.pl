@@ -19,5 +19,3 @@ urlpatterns = [
     # 👇 TO DODAŁEŚ (twoja nowa podstrona)
     path('health/', views.health, name='health'),
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
