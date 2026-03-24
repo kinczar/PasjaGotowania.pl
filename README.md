@@ -19,6 +19,19 @@ Run `.venv\Scripts\Activate`. Then you will see (.venv) on the left from a CLI p
 
 `pip3 install -r requirements.txt`
 
+### Create .env file in webapp
+
+```
+DB_NAME=defaultdb
+DB_USER=avnadmin
+DB_PASSWORD=<password>
+DB_HOST=<host>
+DB_PORT=<db_port>
+CLOUD_NAME=<cloud_name>
+API_KEY=<api_key>
+API_SECRET=<api_secret>
+
+```
 ### How Quit the server :
 Quit the server with CTRL-C in command line
 

@@ -1,1 +1,6 @@
 Django~=5.1.6
+Pillow
+mysqlclient
+python-dotnev
+django-cloudinary-store
+cloudinary
