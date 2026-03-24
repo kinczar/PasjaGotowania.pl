@@ -97,19 +97,13 @@ WSGI_APPLICATION = 'webapp.wsgi.application' #created as an implementation-neutr
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = { 
+DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
-        'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        },
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 #TO JEST DO DODAWANIA ZDJĘĆ DO BAZY DANYCH
 CLOUDINARY_STORAGE = {
