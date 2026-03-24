@@ -6,6 +6,7 @@ from .forms import PostForm
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
+from .models import Comment
 
 # Create your views here.
 def index(request):
@@ -68,5 +69,34 @@ def add_comment(request, post_id):
             comment.post = post
             comment.author = request.user
             comment.save()
+
+    parent_id = request.POST.get("parent_id") #odpowiadanie na komentarze
+    if parent_id:
+        parent = Comment.objects.get(id=parent_id)
+        comment.parent = parent
+
+    comment.save()
+
+    return redirect('forum')
+
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if request.user.is_authenticated:
+        if request.user in comment.likes.all():
+            comment.likes.remove(request.user)
+        else:
+            comment.likes.add(request.user)
+    
+    return redirect('forum')
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def delete_comment(request, comment_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if comment.author == request.user:
+        comment.delete()
 
     return redirect('forum')
