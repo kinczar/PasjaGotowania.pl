@@ -19,3 +19,20 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    parent = models.ForeignKey( #odpowiadanie na komentarze
+        'self', 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='replies'
+    )
+
+    likes = models.ManyToManyField(User, related_name="liked_comments", blank=True)
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def is_reply(self):
+        return self.parent is not None
+    
