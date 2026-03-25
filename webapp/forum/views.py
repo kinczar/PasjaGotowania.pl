@@ -28,7 +28,7 @@ def add_post(request):
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
-            form.save()
+            post.save()
             return redirect('/forum/')
     else:
         form = PostForm()
@@ -70,12 +70,19 @@ def add_comment(request, post_id):
             comment.author = request.user
             comment.save()
 
-    parent_id = request.POST.get("parent_id") #odpowiadanie na komentarze
-    if parent_id:
-        parent = Comment.objects.get(id=parent_id)
-        comment.parent = parent
+    if request.method == 'POST': #odpowiadanie na posty
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.post = post
+            comment.author = request.user
 
-    comment.save()
+        parent_id = request.POST.get("parent_id")
+        if parent_id:
+            parent = Comment.objects.get(id=parent_id)
+            comment.parent = parent
+
+        comment.save()
 
     return redirect('forum')
 
