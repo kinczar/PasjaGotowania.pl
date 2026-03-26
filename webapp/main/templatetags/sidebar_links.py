@@ -12,13 +12,16 @@ def get_links():
         'name': 'Recipes',
         'href': '/recipes',
         'icon': 'fa-utensils',
-    },{
+    }, {
         'name': 'Forum',
         'href': '/forum',
-        'icon': 'fa-comment', #look for your icon here https://fontawesome.com/search?ic=free
-    },{
+        'icon': 'fa-comment',
+    }, {
         'name': 'Add post',
         'href': '/forum/add/',
         'icon': 'fa-plus',
+    }, {
+        'name': 'Health',
+        'href': '/health',
+        'icon': 'fa-heart',
     }]
-    
