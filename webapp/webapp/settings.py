@@ -17,19 +17,18 @@ import os
 load_dotenv()
 import cloudinary
 
-#zaladowuje zmienne środowiskowe dotyczące bazy danych i serwer plików
-load_dotenv()
-
-#ustawienie połączenia z aplikacją do przechowywania zdjęć(dodanych w postach)
-cloudinary.config(
-    cloud_name = os.getenv('CLOUD_NAME'),
-    api_key = os.getenv('API_KEY'),
-    api_secret = os.getenv('API_SECRET')
-)
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ładowanie zmiennych z pliku .env
+load_dotenv(BASE_DIR / ".env")
+
+# konfiguracja Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv('CLOUD_NAME'),
+    api_key=os.getenv('API_KEY'),
+    api_secret=os.getenv('API_SECRET')
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -38,7 +37,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-jnscosjmvqy4^59lzts0s_yct#b8@9_ex)%08%6v_%ek#hm3ry'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True #show errors during program usage
+DEBUG = True  # show errors during program usage
 
 ALLOWED_HOSTS = ["*"]
 
@@ -46,10 +45,10 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
-    # aplikacje cloudinary (przechowywanie zdjęć)
+    # aplikacje cloudinary
     'cloudinary_storage',
     'cloudinary',
-    
+
     # default apps
     'django.contrib.admin',
     'django.contrib.auth',
@@ -62,9 +61,10 @@ INSTALLED_APPS = [
     'main',
     'news',
     'forum',
+    'accounts',
 ]
 
-MIDDLEWARE = [ # now default, used for verification/modification processing data from requests
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -74,7 +74,7 @@ MIDDLEWARE = [ # now default, used for verification/modification processing data
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'webapp.urls' 
+ROOT_URLCONF = 'webapp.urls'
 
 TEMPLATES = [
     {
@@ -92,7 +92,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'webapp.wsgi.application' #created as an implementation-neutral interface between web servers and web applications or frameworks to promote common ground for portable web application development
+WSGI_APPLICATION = 'webapp.wsgi.application'
 
 
 # Database
@@ -107,8 +107,9 @@ DATABASES = {
         'HOST': 'pasjagotowania-pasjagotowania.c.aivencloud.com',
         'PORT': '23184',
         'OPTIONS': {
-            'ssl': {'ssl-mode': 'REQUIRED'}
-        }
+            'ssl': {'ssl-mode': 'REQUIRED'},
+            'charset': 'utf8mb4',
+        },
     }
 }
 
@@ -163,9 +164,13 @@ STATICFILES_DIRS = [
     BASE_DIR / 'main/static',
 ]
 
+# Media files
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login'
-MEDIA_URL = '/media/'

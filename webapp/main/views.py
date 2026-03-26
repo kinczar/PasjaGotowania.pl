@@ -2,6 +2,7 @@
 
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
+from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages #to show message back for errors
@@ -96,23 +97,46 @@ def recipes(request):
     query = request.GET.get("q")
     category = request.GET.get("category")
     results = []
+    favorite_ids = []
 
     if query or category:
         results = Recipe.objects.all()
 
         if query:
-            results = results.filter(title__icontains=query)
+            results = results.filter(
+                Q(title__icontains=query) |
+                Q(description__icontains=query) |
+                Q(category__icontains=query) |
+                Q(ingredients__icontains=query)
+            )
 
         if category:
             results = results.filter(category__icontains=category)
+
+    if request.user.is_authenticated:
+        favorite_ids = request.user.favorite_recipes.values_list('id', flat=True)
 
     return render(request, "main/recipes.html", {
         "query": query,
         "results": results,
         "category": category,
+        "favorite_ids": favorite_ids,
     })
+
 def recipe_detail(request, id):
     recipe = get_object_or_404(Recipe, id=id)
     return render(request, 'main/detail.html', {'recipe': recipe})
+
+@login_required
+def toggle_favorite(request, id):
+    recipe = get_object_or_404(Recipe, id=id)
+
+    if request.user in recipe.favorites.all():
+        recipe.favorites.remove(request.user)
+    else:
+        recipe.favorites.add(request.user)
+
+    return redirect('recipes')
+
 def health(request):
     return render(request, 'main/health.html')
