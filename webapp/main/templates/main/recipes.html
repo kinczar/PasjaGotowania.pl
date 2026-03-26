@@ -177,6 +177,59 @@
         color: #facc15;
     }
 
+    .favorite-form {
+        margin-top: 12px;
+    }
+
+    .favorite-btn {
+        background: rgba(255,255,255,0.08);
+        color: white;
+        border: 1px solid rgba(255,255,255,0.12);
+        padding: 8px 14px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.2s ease;
+        font-size: 0.95rem;
+    }
+
+    .favorite-btn:hover {
+        background: rgba(255,255,255,0.16);
+        transform: translateY(-1px);
+    }
+
+    .favorites-panel {
+        margin-top: 30px;
+        text-align: left;
+        background: rgba(255,255,255,0.06);
+        border-radius: 10px;
+        padding: 20px;
+    }
+
+    .favorites-panel h3 {
+        color: white;
+        margin-bottom: 15px;
+    }
+
+    .favorites-panel ul {
+        margin: 0;
+        padding-left: 20px;
+        color: #e2e8f0;
+    }
+
+    .favorites-panel li {
+        margin-bottom: 8px;
+    }
+
+    .favorite-link {
+        color: #ffffff;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .favorite-link:hover {
+        color: #facc15;
+    }
+
 </style>
 
 
@@ -231,10 +284,44 @@
             </h4>
             <p>{{ recipe.description }}</p>
             <span>Kategoria: {{ recipe.category }}</span>
+
+            {% if user.is_authenticated %}
+                <form method="post" action="{% url 'toggle_favorite' recipe.id %}" class="favorite-form">
+                    {% csrf_token %}
+
+                    {% if recipe.id in favorite_ids %}
+                        <button type="submit" class="favorite-btn">❤️ Usuń z ulubionych</button>
+                    {% else %}
+                        <button type="submit" class="favorite-btn">🤍 Dodaj do ulubionych</button>
+                    {% endif %}
+                </form>
+            {% endif %}
         </div>
     {% endfor %}
 </div>
 {% endif %}
+
+<div class="favorites-panel">
+    <h3>⭐ Ulubione przepisy</h3>
+
+    {% if user.is_authenticated %}
+        {% if favorite_ids %}
+            <ul>
+                {% for recipe in user.favorite_recipes.all %}
+                    <li>
+                        <a href="{% url 'recipe_detail' recipe.id %}" class="favorite-link">
+                            {{ recipe.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Nie masz jeszcze ulubionych przepisów.</p>
+        {% endif %}
+    {% else %}
+        <p>Zaloguj się, aby dodawać przepisy do ulubionych.</p>
+    {% endif %}
+</div>
 
     </div>
 </div>
