@@ -1,6 +1,6 @@
 Django~=5.1.6
 Pillow
 mysqlclient
-python-dotnev
+python-dotenv
 django-cloudinary-store
 cloudinary
