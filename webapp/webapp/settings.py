@@ -11,9 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-#baza danych 
-import os
 from dotenv import load_dotenv
+import os
+
+load_dotenv()
 import cloudinary
 
 #zaladowuje zmienne środowiskowe dotyczące bazy danych i serwer plików
@@ -99,8 +100,15 @@ WSGI_APPLICATION = 'webapp.wsgi.application' #created as an implementation-neutr
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'defaultdb',
+        'USER': 'avnadmin',
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': 'pasjagotowania-pasjagotowania.c.aivencloud.com',
+        'PORT': '23184',
+        'OPTIONS': {
+            'ssl': {'ssl-mode': 'REQUIRED'}
+        }
     }
 }
 
