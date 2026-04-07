@@ -25,15 +25,52 @@ def forum(request):
 def add_post(request):
     if request.method == "POST":
         form = PostForm(request.POST, request.FILES)
+
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user
+
+            post_type = request.POST.get("post_type")
+
+            if post_type == "recipe":
+
+                names = request.POST.getlist("ingredients_name[]")
+                amounts = request.POST.getlist("ingredients_amount[]")
+                units = request.POST.getlist("ingredients_unit[]")
+
+                ingredients_list = []
+
+                for name, amount, unit in zip(names, amounts, units):
+                    if name:
+                        ingredients_list.append(f"{name} - {amount} {unit}")
+
+                if not ingredients_list:
+                    return render(request, "forum/add_post.html", {
+                        "form": form,
+                        "error": "Dodaj przynajmniej jeden składnik"
+                })
+
+                post.ingredients = "\n".join(ingredients_list)
+
+                post.calories = request.POST.get("calories") or None
+                post.servings = request.POST.get("servings") or None
+
+                time_value = request.POST.get("time_value")
+                time_unit = request.POST.get("time_unit")
+
+                if time_value:
+                    post.time = f"{time_value} min"
+
             post.save()
             return redirect('/forum/')
+
     else:
         form = PostForm()
 
-    return render(request, "forum/add_post.html", {"form": form})
+    return render(request, "forum/add_post.html", {
+        "form": form
+    })
+    
 
 #usuwanie posta
 @login_required
