@@ -1,12 +1,20 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .forms import UserUpdateForm, ProfileUpdateForm
-
+from forum.models import Post
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth import update_session_auth_hash
 
 @login_required
 def profile(request):
-    return render(request, 'accounts/profile.html')
+    user_posts_count = Post.objects.filter(author=request.user).count()
 
+    context = {
+        'user_posts_count': user_posts_count,
+    }
+
+    return render(request, 'accounts/profile.html', context)
 
 @login_required
 def edit_profile(request):
@@ -21,6 +29,7 @@ def edit_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
+            messages.success(request, "Profil został zaktualizowany!")
             return redirect('profile')
     else:
         user_form = UserUpdateForm(instance=request.user)
@@ -30,3 +39,17 @@ def edit_profile(request):
         'user_form': user_form,
         'profile_form': profile_form
     })
+
+@login_required
+def change_password(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, "Hasło zostało zmienione!")
+            return redirect('profile')
+    else:
+        form = PasswordChangeForm(request.user)
+
+    return render(request, 'accounts/change_password.html', {'form': form})

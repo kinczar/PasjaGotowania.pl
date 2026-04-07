@@ -35,6 +35,13 @@
                 {{ profile_form.bio }}
             </div>
 
+            {% if user.profile.profile_picture %}
+                <div class="current-profile-image-wrapper">
+                    <p>Aktualne zdjęcie profilowe:</p>
+                    <img src="{{ user.profile.profile_picture.url }}" alt="Zdjęcie profilowe" class="current-profile-image">
+                </div>
+            {% endif %}
+
             <div class="form-group">
                 <label for="{{ profile_form.profile_picture.id_for_label }}">Zdjęcie profilowe</label>
                 {{ profile_form.profile_picture }}
@@ -115,5 +122,24 @@
     .save-btn:hover {
         background-color: #2563eb;
     }
+
+    .current-profile-image-wrapper {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .current-profile-image-wrapper p {
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .current-profile-image {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+
 </style>
 {% endblock %}
