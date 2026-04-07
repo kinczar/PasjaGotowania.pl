@@ -1,6 +1,6 @@
 {% extends "main/layout/layout.html" %}
 
-{% block title %}Add post{% endblock %}
+{% block title %}Dodaj wpis{% endblock %}
 
 {% block content %}
 
@@ -17,7 +17,7 @@
             <div class="card shadow-sm">
                 <div class="card-body">
 
-                    <h2 class="mb-4 text-center">Add post</h2>
+                    <h2 class="mb-4 text-center">Dodaj wpis</h2>
 
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
@@ -30,7 +30,7 @@
 
                         <!-- TYTUŁ -->
                         <div class="mb-3">
-                            <label>Post title</label>
+                            <label>Tytuł</label>
                             {{ form.title }}
                         </div>
 
@@ -121,18 +121,18 @@
 
                         <!-- TREŚĆ -->
                         <div class="mb-3">
-                            <label>Post body</label>
+                            <label>Opis</label>
                             {{ form.body }}
                         </div>
 
                         <!-- IMAGE -->
                         <div class="mb-3">
-                            <label>Image</label>
+                            <label>Dodaj zdjęcie</label>
                             {{ form.image }}
                         </div>
 
                         <button class="btn btn-success">
-                            Add post
+                            Dodaj
                         </button>
 
                     </form>
