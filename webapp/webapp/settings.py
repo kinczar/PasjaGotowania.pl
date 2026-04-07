@@ -61,7 +61,7 @@ INSTALLED_APPS = [
     'main',
     'news',
     'forum',
-    'accounts',
+    'accounts.apps.AccountsConfig',
 ]
 
 MIDDLEWARE = [
