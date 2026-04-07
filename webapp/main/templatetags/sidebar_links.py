@@ -5,11 +5,11 @@ register = template.Library();
 @register.simple_tag
 def get_links():
     return [{
-        'name': 'Home',
+        'name': 'Strona główna',
         'href': '/',
         'icon': 'fa-house',
     }, {
-        'name': 'Recipes',
+        'name': 'Przepisy',
         'href': '/recipes',
         'icon': 'fa-utensils',
     }, {
@@ -17,11 +17,11 @@ def get_links():
         'href': '/forum',
         'icon': 'fa-comment',
     }, {
-        'name': 'Add post',
+        'name': 'Dodaj wpis',
         'href': '/forum/add/',
         'icon': 'fa-plus',
     }, {
-        'name': 'Health',
+        'name': 'Zdrowie',
         'href': '/health',
         'icon': 'fa-heart',
     }]

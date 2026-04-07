@@ -144,3 +144,15 @@ def delete_comment(request, comment_id):
         comment.delete()
 
     return redirect('forum')
+
+
+@login_required
+def toggle_save(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.user in post.saved_by.all():
+        post.saved_by.remove(request.user)
+    else:
+        post.saved_by.add(request.user)
+
+    return redirect('forum')

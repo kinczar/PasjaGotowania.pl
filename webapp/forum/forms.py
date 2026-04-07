@@ -10,12 +10,12 @@ class PostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Enter post title'
+                'placeholder': 'Dodaj tytuł...'
             }),
             'body': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 6,
-                'placeholder': 'Write your post...'
+                'placeholder': 'Dodaj opis...'
             }),
             'post_type': forms.Select(attrs={
                 'class': 'form-select'
