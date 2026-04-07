@@ -1,12 +1,119 @@
-<h1>Edit profile</h1>
+{% extends 'main/layout/layout.html' %}
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save changes</button>
-</form>
+{% block title %}Edytuj profil{% endblock %}
 
-{% if profile.profile_picture %}
-    <h3>Current profile picture:</h3>
-    <img src="{{ profile.profile_picture.url }}" width="150">
-{% endif %}
+{% block content %}
+<div class="edit-profile-wrapper">
+    <div class="edit-profile-card">
+        <h2>Edytuj profil</h2>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ user_form.username.id_for_label }}">Nazwa użytkownika</label>
+                {{ user_form.username }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ user_form.email.id_for_label }}">Email</label>
+                {{ user_form.email }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ user_form.first_name.id_for_label }}">Imię</label>
+                {{ user_form.first_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ user_form.last_name.id_for_label }}">Nazwisko</label>
+                {{ user_form.last_name }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ profile_form.bio.id_for_label }}">Bio</label>
+                {{ profile_form.bio }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ profile_form.profile_picture.id_for_label }}">Zdjęcie profilowe</label>
+                {{ profile_form.profile_picture }}
+            </div>
+
+            <button type="submit" class="save-btn">Zapisz zmiany</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .edit-profile-wrapper {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px 40px 180px;
+        background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+    }
+
+    .edit-profile-card {
+        width: 100%;
+        max-width: 650px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+
+    .edit-profile-card h2 {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+        background: rgba(255, 255, 255, 0.12);
+        color: white;
+        box-sizing: border-box;
+    }
+
+    .form-group textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .save-btn {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        background-color: #3b82f6;
+        color: white;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .save-btn:hover {
+        background-color: #2563eb;
+    }
+</style>
+{% endblock %}

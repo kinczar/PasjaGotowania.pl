@@ -1,22 +1,32 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Profile
-from .forms import ProfileForm
+from .forms import UserUpdateForm, ProfileUpdateForm
+
+
+@login_required
+def profile(request):
+    return render(request, 'accounts/profile.html')
 
 
 @login_required
 def edit_profile(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
-
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect('edit_profile')
+        user_form = UserUpdateForm(request.POST, instance=request.user)
+        profile_form = ProfileUpdateForm(
+            request.POST,
+            request.FILES,
+            instance=request.user.profile
+        )
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            return redirect('profile')
     else:
-        form = ProfileForm(instance=profile)
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
 
     return render(request, 'accounts/edit_profile.html', {
-        'form': form,
-        'profile': profile,
+        'user_form': user_form,
+        'profile_form': profile_form
     })

@@ -1,0 +1,95 @@
+{% extends 'main/layout/layout.html' %}
+
+{% block title %}Mój profil{% endblock %}
+
+{% block content %}
+<div class="profile-wrapper">
+    <div class="profile-card">
+        <h2>Mój profil</h2>
+
+        {% if user.profile.profile_picture %}
+            <img src="{{ user.profile.profile_picture.url }}" alt="Zdjęcie profilowe" class="profile-image">
+        {% else %}
+            <div class="no-image">Brak zdjęcia profilowego</div>
+        {% endif %}
+
+        <p><strong>Nazwa użytkownika:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Imię:</strong> {{ user.first_name }}</p>
+        <p><strong>Nazwisko:</strong> {{ user.last_name }}</p>
+        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+
+        <a href="{% url 'edit_profile' %}" class="edit-btn">Edytuj profil</a>
+    </div>
+</div>
+
+<style>
+    .profile-wrapper {
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px 40px 180px;
+        background: linear-gradient(135deg, #0f172a, #1e293b, #334155);
+    }
+
+    .profile-card {
+        width: 100%;
+        max-width: 600px;
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 30px;
+        color: white;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        text-align: center;
+    }
+
+    .profile-card h2 {
+        margin-bottom: 20px;
+    }
+
+    .profile-image {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 50%;
+        margin-bottom: 20px;
+        border: 3px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .no-image {
+        width: 140px;
+        height: 140px;
+        margin: 0 auto 20px auto;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #cbd5e1;
+        font-size: 14px;
+    }
+
+    .profile-card p {
+        margin: 10px 0;
+        font-size: 16px;
+    }
+
+    .edit-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 12px 24px;
+        background-color: #3b82f6;
+        color: white;
+        text-decoration: none;
+        border-radius: 10px;
+        transition: 0.3s ease;
+    }
+
+    .edit-btn:hover {
+        background-color: #2563eb;
+    }
+</style>
+{% endblock %}
