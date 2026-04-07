@@ -7,6 +7,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from .models import Comment
+from main.models import Recipe
 
 # Create your views here.
 def index(request):
@@ -62,6 +63,16 @@ def add_post(request):
                     post.time = f"{time_value} min"
 
             post.save()
+
+            if post.post_type == "recipe":
+                Recipe.objects.create(
+                    title=post.title,
+                    description=post.body,
+                    ingredients=post.ingredients if post.ingredients else "",
+                    instructions=post.body,
+                    category="Przepis z forum"
+                )
+
             return redirect('/forum/')
 
     else:

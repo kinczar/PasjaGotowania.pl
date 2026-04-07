@@ -142,7 +142,7 @@ def health(request):
     return render(request, 'main/health.html')
 
 @login_required
-def recipes(request):
+def saved_posts(request):
     saved_posts = request.user.saved_posts.all()
 
     return render(request, "main/recipes.html", {
