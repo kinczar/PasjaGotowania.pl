@@ -1,12 +1,11 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    {% load static %}
-    <meta charset="UTF-8">
-    <title>Zdrowie | PasjaGotowania</title>
-    <link rel="stylesheet" href="{% static 'main/css/health.css' %}">
-</head>
-<body>
+{% extends 'main/layout/layout.html' %}
+{% load static %}
+
+{% block title %}Zdrowie | PasjaGotowania{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'main/css/health.css' %}">
 
 <section class="hero">
     <h1>Zdrowie w jedzeniu 🥗</h1>
@@ -65,5 +64,4 @@
     </div>
 </section>
 
-</body>
-</html>
+{% endblock %}

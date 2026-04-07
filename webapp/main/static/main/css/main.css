@@ -128,3 +128,43 @@ body {
     max-height: 200px;   /* wysokość ~3 komentarzy */
     overflow-y: auto;    /* pojawia się scroll */
 }
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 320px;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
+
+    background: linear-gradient(180deg, #0f172a, #020617);
+    border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+/* linki */
+.sidebar .nav-link {
+    color: #cbd5e1;
+    border-radius: 10px;
+    margin-bottom: 6px;
+    padding: 25px 20px;
+    transition: 0.2s;
+}
+
+/* hover */
+.sidebar .nav-link:hover {
+    background: rgba(255,255,255,0.08);
+    color: white;
+    transform: translateX(4px);
+}
+
+/* aktywny */
+.sidebar .nav-link.active {
+    background: linear-gradient(90deg, #22c55e, #06b6d4);
+    color: white;
+}
+
+/* ikonki */
+.sidebar i {
+    margin-right: 10px;
+}

@@ -3,49 +3,53 @@
 
 {% get_links as links %}
 
-<div class="d-flex flex-column flex-shrink-0 p-3 text-bg-dark" style="width: 280px; height: 100vh;">
-   <a href="/main/static" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none gap-2">
-  <img src="{% static 'main/images/logo.svg' %}" style="height:200px;border-radius:40%;">
-  <span class="fs-4"></span>
-</a>
-    <hr>
+<div class="sidebar d-flex flex-column flex-shrink-0 p-3">
+
+   <a href="/" class="d-flex align-items-center mb-4 text-white text-decoration-none gap-2">
+      <img src="{% static 'main/images/logo.svg' %}"
+           style="height:150px; border-radius:20px;">
+   </a>
+
     <ul class="nav nav-pills flex-column mb-auto">
 
-      <!--naprawilam to, ze zakladka "forum" nie podswietlala sie na niebiesko-->
 {% for link in links %}
     <li class="nav-item">
 
     <a href="{{ link.href }}"
-    class="nav-link
-    {% if request.path|cut:'/' == link.href|cut:'/' %}
-      active
-    {% else %}
-      text-white
-    {% endif %}
-">
+       class="nav-link
+       {% if request.path|cut:'/' == link.href|cut:'/' %}
+            active
+       {% else %}
+            text-white
+       {% endif %}
+    ">
 
-    <i class="fa-solid {{ link.icon }}"></i>
-    <span>{{ link.name }}</span>
+        <i class="fa-solid {{ link.icon }}"></i>
+        <span>{{ link.name }}</span>
 
     </a>
 
     </li>
 {% endfor %}
-        
+
     </ul>
+
     <hr>
+
     {% if request.user.is_authenticated %}
-    <div class="dropdown">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+    <div class="dropdown mt-auto">
+      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+
         {% if request.user.profile.profile_picture %}
-            <img src="{{ request.user.profile.profile_picture.url }}" alt="" width="32" height="32" class="rounded-circle me-2">
+            <img src="{{ request.user.profile.profile_picture.url }}" width="32" height="32" class="rounded-circle me-2">
         {% else %}
-            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">
+            <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
         {% endif %}
+
         <strong>{{ request.user.username }}</strong>
       </a>
+
       <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-        <li><a class="dropdown-item" href="#">New project...</a></li>
         <li><a class="dropdown-item" href="#">Settings</a></li>
         <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit profile</a></li>
         <li><hr class="dropdown-divider"></li>
@@ -57,10 +61,12 @@
         </li>
       </ul>
     </div>
+
     {% else %}
-    <div>
-      <a class="btn btn-primary" href="/login">Login</a>
-      <a class="btn btn-info" href="/register">Register</a>
+    <div class="mt-auto">
+      <a class="btn btn-primary w-100 mb-2" href="/login">Login</a>
+      <a class="btn btn-info w-100" href="/register">Register</a>
     </div>
     {% endif %}
-  </div>
+
+</div>

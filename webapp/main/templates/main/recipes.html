@@ -5,7 +5,7 @@
 {% block content %}
 <style>
     body {
-    background: linear-gradient(135deg, #0f172a, #0b1120, #1e293b);
+        background: linear-gradient(135deg, #0f172a, #0b1120, #1e293b);
     }
 
     .recipes-wrapper {
@@ -58,8 +58,8 @@
         max-width: 500px;
         padding: 12px 16px;
         border-radius: 8px;
-        border: 1px solid rgba(255,255,255,0.15);
-        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
         outline: none;
     }
@@ -93,9 +93,9 @@
     }
 
     .category-btn {
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
-        border: 1px solid rgba(255,255,255,0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         padding: 10px 18px;
         border-radius: 8px;
         cursor: pointer;
@@ -110,18 +110,18 @@
     }
 
     .category-btn:hover {
-        background: rgba(255,255,255,0.15);
+        background: rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
     }
 
     .category-btn:hover {
-        background: rgba(255,255,255,0.16);
+        background: rgba(255, 255, 255, 0.16);
     }
 
     .results-box {
         margin-top: 35px;
         text-align: left;
-        background: rgba(255,255,255,0.06);
+        background: rgba(255, 255, 255, 0.06);
         border-radius: 10px;
         padding: 20px;
     }
@@ -143,7 +143,7 @@
 
     .recipe-result-item {
         padding: 16px 0;
-        border-bottom: 1px solid rgba(255,255,255,0.12);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     }
 
     .recipe-result-item:last-child {
@@ -182,9 +182,9 @@
     }
 
     .favorite-btn {
-        background: rgba(255,255,255,0.08);
+        background: rgba(255, 255, 255, 0.08);
         color: white;
-        border: 1px solid rgba(255,255,255,0.12);
+        border: 1px solid rgba(255, 255, 255, 0.12);
         padding: 8px 14px;
         border-radius: 8px;
         cursor: pointer;
@@ -193,14 +193,14 @@
     }
 
     .favorite-btn:hover {
-        background: rgba(255,255,255,0.16);
+        background: rgba(255, 255, 255, 0.16);
         transform: translateY(-1px);
     }
 
     .favorites-panel {
         margin-top: 30px;
         text-align: left;
-        background: rgba(255,255,255,0.06);
+        background: rgba(255, 255, 255, 0.06);
         border-radius: 10px;
         padding: 20px;
     }
@@ -229,7 +229,6 @@
     .favorite-link:hover {
         color: #facc15;
     }
-
 </style>
 
 
@@ -243,13 +242,8 @@
         </p>
 
         <form method="GET" class="search-form">
-            <input
-                type="text"
-                name="q"
-                value="{{ query|default:'' }}"
-                placeholder="Wpisz nazwę dania..."
-                class="search-input"
-            >
+            <input type="text" name="q" value="{{ query|default:'' }}" placeholder="Wpisz nazwę dania..."
+                class="search-input">
             <button class="btn-custom" type="submit">Szukaj</button>
         </form>
 
@@ -271,57 +265,132 @@
             </a>
         </div>
 
-{% if results %}
-<div class="results-box">
-    <h3>Wyniki wyszukiwania</h3>
+        {% if results %}
+        <div class="results-box">
+            <h3>Wyniki wyszukiwania</h3>
 
-    {% for recipe in results %}
-        <div class="recipe-result-item">
-            <h4>
-                <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-link">
-                    {{ recipe.title }}
-                </a>
-            </h4>
-            <p>{{ recipe.description }}</p>
-            <span>Kategoria: {{ recipe.category }}</span>
+            {% for recipe in results %}
+            <div class="recipe-result-item">
+                <h4>
+                    <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-link">
+                        {{ recipe.title }}
+                    </a>
+                </h4>
+                <p>{{ recipe.description }}</p>
+                <span>Kategoria: {{ recipe.category }}</span>
 
-            {% if user.is_authenticated %}
+                {% if user.is_authenticated %}
                 <form method="post" action="{% url 'toggle_favorite' recipe.id %}" class="favorite-form">
                     {% csrf_token %}
 
                     {% if recipe.id in favorite_ids %}
-                        <button type="submit" class="favorite-btn">❤️ Usuń z ulubionych</button>
+                    <button type="submit" class="favorite-btn">❤️ Usuń z ulubionych</button>
                     {% else %}
-                        <button type="submit" class="favorite-btn">🤍 Dodaj do ulubionych</button>
+                    <button type="submit" class="favorite-btn">🤍 Dodaj do ulubionych</button>
                     {% endif %}
                 </form>
-            {% endif %}
+                {% endif %}
+            </div>
+            {% endfor %}
         </div>
-    {% endfor %}
-</div>
-{% endif %}
+        {% endif %}
 
-<div class="favorites-panel">
-    <h3>⭐ Ulubione przepisy</h3>
+        <div class="favorites-panel">
+            <h3>⭐ Ulubione przepisy</h3>
 
-    {% if user.is_authenticated %}
-        {% if favorite_ids %}
+            {% if user.is_authenticated %}
+            {% if favorite_ids %}
             <ul>
                 {% for recipe in user.favorite_recipes.all %}
-                    <li>
-                        <a href="{% url 'recipe_detail' recipe.id %}" class="favorite-link">
-                            {{ recipe.title }}
-                        </a>
-                    </li>
+                <li>
+                    <a href="{% url 'recipe_detail' recipe.id %}" class="favorite-link">
+                        {{ recipe.title }}
+                    </a>
+                </li>
                 {% endfor %}
             </ul>
-        {% else %}
-            <p>Nie masz jeszcze ulubionych przepisów.</p>
-        {% endif %}
-    {% else %}
-        <p>Zaloguj się, aby dodawać przepisy do ulubionych.</p>
-    {% endif %}
-</div>
+            {% else %}
+            {% if saved_posts %}
+
+            {% for post in saved_posts %}
+
+            <details class="mb-3 p-2 rounded" style="background:#2b3648;">
+
+                <!-- 🔥 TYTUŁ (ZWinięty widok) -->
+                <summary style="cursor:pointer; font-weight:bold;">
+                    {{ post.title }}
+                </summary>
+
+                <!-- 🔥 ROZWINIĘTY POST -->
+                <div class="mt-3">
+
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}"
+                        style="width:100%; max-height:300px; object-fit:cover; border-radius:10px;">
+                    {% endif %}
+
+                    {% if post.post_type == "recipe" %}
+
+                    <!-- META -->
+                    <div class="mt-2 d-flex gap-3 flex-wrap">
+
+                        {% if post.calories %}
+                        <span><i class="fa-solid fa-fire"></i> {{ post.calories }} kcal</span>
+                        {% endif %}
+
+                        {% if post.servings %}
+                        <span><i class="fa-solid fa-utensils"></i> {{ post.servings }} porcji</span>
+                        {% endif %}
+
+                        {% if post.time %}
+                        <span><i class="fa-regular fa-clock"></i> {{ post.time }}</span>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- SKŁADNIKI -->
+                    <div class="mt-2">
+                        <strong>Składniki:</strong>
+                        <ol>
+                            {% for line in post.ingredients.splitlines %}
+                            <li>{{ line }}</li>
+                            {% endfor %}
+                        </ol>
+                    </div>
+
+                    {% endif %}
+
+                    <!-- TREŚĆ -->
+                    <div class="mt-2">
+                        {{ post.body|linebreaks }}
+                    </div>
+
+                    <div class="d-flex justify-content-end mb-2">
+
+                        <a href="{% url 'toggle_save' post.id %}" class="btn btn-sm btn-outline-danger">
+
+                            <i class="fa-solid fa-trash"></i>
+                            Usuń z ulubionych
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </details>
+
+            {% endfor %}
+
+            {% else %}
+            Nie masz jeszcze ulubionych przepisów.
+            {% endif %}
+
+            {% endif %}
+            {% else %}
+            <p>Zaloguj się, aby dodawać przepisy do ulubionych.</p>
+            {% endif %}
+        </div>
 
     </div>
 </div>
