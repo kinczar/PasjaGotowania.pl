@@ -4,35 +4,130 @@
 
 {% block content %}
 
+{% if error %}
+<div class="alert alert-danger">
+    {{ error }}
+</div>
+{% endif %}
+
 <div class="container mt-2">
     <div class="row justify-content-center">
         <div class="col-md-12">
 
             <div class="card shadow-sm">
-                <div class="card-body" style="display:flex; flex-direction:column;">
+                <div class="card-body">
 
                     <h2 class="mb-4 text-center">Add post</h2>
 
                     <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
 
+                        <!-- KATEGORIA -->
                         <div class="mb-3">
-                            <label class="form-label">Post title</label>
-                            {{ form.title }}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Post body</label>
-                            {{ form.body }}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Kategoria:</label>
+                            <label>Kategoria:</label>
                             {{ form.post_type }}
                         </div>
 
+                        <!-- TYTUŁ -->
                         <div class="mb-3">
-                            <label class="form-label">Image</label>
+                            <label>Post title</label>
+                            {{ form.title }}
+                        </div>
+
+                        <!-- POLA PRZEPIS -->
+                        <div id="recipe-fields" style="display:none;">
+
+                            <!-- META -->
+                            <div id="recipe-meta">
+
+                                <!-- KALORIE -->
+                                <div class="mb-3">
+                                    <label>
+                                        <input type="checkbox" class="meta-toggle" data-target="calories-field">
+                                        Kalorie
+                                    </label>
+                                    <div id="calories-field" style="display:none;">
+                                        <input type="number" name="calories" class="form-control mt-2"
+                                            placeholder="np. 500 kcal">
+                                    </div>
+                                </div>
+
+                                <!-- PORCJE -->
+                                <div class="mb-3">
+                                    <label>
+                                        <input type="checkbox" class="meta-toggle" data-target="servings-field">
+                                        Liczba porcji
+                                    </label>
+                                    <div id="servings-field" style="display:none;">
+                                        <input type="number" name="servings" class="form-control mt-2"
+                                            placeholder="np. 4">
+                                    </div>
+                                </div>
+
+                                <!-- CZAS -->
+                                <div class="mb-3">
+                                    <label>
+                                        <input type="checkbox" class="meta-toggle" data-target="time-field">
+                                        Czas przygotowania
+                                    </label>
+                                    <div id="time-field" style="display:none; margin-top:8px;">
+                                        <div style="display:flex; align-items:center; gap:10px;">
+                                            <input type="number" name="time_value" class="form-control"
+                                                placeholder="np. 30">
+                                            <span>min</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- SKŁADNIKI -->
+                            <div class="mb-3">
+                                <label>Składniki</label>
+
+                                <div id="ingredients-container">
+
+                                    <!-- pierwszy składnik -->
+                                    <div class="ingredient-row d-flex gap-2 mb-2 align-items-center">
+
+                                        <button type="button" class="btn btn-sm btn-danger remove-ingredient">
+                                            ✕
+                                        </button>
+
+                                        <input type="text" name="ingredients_name[]" class="form-control"
+                                            placeholder="np. mąka">
+
+                                        <input type="number" name="ingredients_amount[]" class="form-control"
+                                            placeholder="ilość">
+
+                                        <select name="ingredients_unit[]" class="form-select">
+                                            <option value="g">g</option>
+                                            <option value="kg">kg</option>
+                                            <option value="ml">ml</option>
+                                            <option value="l">l</option>
+                                            <option value="szt">szt</option>
+                                        </select>
+
+                                    </div>
+
+                                </div>
+
+                                <button type="button" class="btn btn-sm btn-outline-primary" id="add-ingredient">
+                                    + Dodaj składnik
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <!-- TREŚĆ -->
+                        <div class="mb-3">
+                            <label>Post body</label>
+                            {{ form.body }}
+                        </div>
+
+                        <!-- IMAGE -->
+                        <div class="mb-3">
+                            <label>Image</label>
                             {{ form.image }}
                         </div>
 
@@ -48,5 +143,70 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const select = document.querySelector("select[name='post_type']");
+        const recipeFields = document.getElementById("recipe-fields");
+
+        function updateForm() {
+            if (select.value.toLowerCase() === "recipe") {
+                recipeFields.style.display = "block";
+            } else {
+                recipeFields.style.display = "none";
+            }
+        }
+
+        select.addEventListener("change", updateForm);
+        updateForm();
+
+        // checkboxy (kalorie, porcje, czas)
+        const toggles = document.querySelectorAll(".meta-toggle");
+
+        toggles.forEach(toggle => {
+            toggle.addEventListener("change", function () {
+                const target = document.getElementById(this.dataset.target);
+                target.style.display = this.checked ? "block" : "none";
+            });
+        });
+
+        // dodawanie składników
+        const addBtn = document.getElementById("add-ingredient");
+        const container = document.getElementById("ingredients-container");
+
+        addBtn.addEventListener("click", function () {
+
+            const newRow = document.createElement("div");
+            newRow.classList.add("ingredient-row", "d-flex", "gap-2", "mb-2", "align-items-center");
+
+            newRow.innerHTML = `
+            <button type="button" class="btn btn-sm btn-danger remove-ingredient">✕</button>
+
+            <input type="text" name="ingredients_name[]" class="form-control" placeholder="np. cukier">
+
+            <input type="number" name="ingredients_amount[]" class="form-control" placeholder="ilość">
+
+            <select name="ingredients_unit[]" class="form-select">
+                <option value="g">g</option>
+                <option value="kg">kg</option>
+                <option value="ml">ml</option>
+                <option value="l">l</option>
+                <option value="szt">szt</option>
+            </select>
+        `;
+
+            container.appendChild(newRow);
+        });
+
+        // usuwanie składnika
+        document.addEventListener("click", function (e) {
+            if (e.target.classList.contains("remove-ingredient")) {
+                e.target.parentElement.remove();
+            }
+        });
+
+    });
+</script>
 
 {% endblock %}
