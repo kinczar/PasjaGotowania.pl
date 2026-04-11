@@ -57,16 +57,27 @@
             <div class="col-md-8">
 
                 <!-- UŻYTKOWNIK -->
-                <div class="d-flex align-items-center mb-2 w-100">
+                <div class="d-flex align-items-center mb-2">
 
-                    <div style="width:40px;height:40px;background:#ddd;border-radius:50%;margin-right:10px;"></div>
+                    <!-- AVATAR -->
+                    <a href="{% url 'user_profile' post.author.id %}">
+                        {% if post.author.profile.profile_picture %}
+                        <img src="{{ post.author.profile.profile_picture.url }}"
+                            style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:10px;">
+                        {% else %}
+                        <img src="https://via.placeholder.com/40" style="border-radius:50%; margin-right:10px;">
+                        {% endif %}
+                    </a>
 
+                    <!-- NICK + DATA -->
                     <div>
-                        <strong>{{ post.author.username }}</strong><br>
-                        <small class="text-muted">{{ post.published_at }}</small>
+                        <a href="{% url 'user_profile' post.author.id %}" style="text-decoration:none; color:#000;">
+                            <strong>{{ post.author.username }}</strong>
+                        </a><br>
+
+                        <small>{{ post.published_at }}</small>
                     </div>
 
-                    <!-- PRAWA STRONA -->
                 </div>
 
                 <h5 class="mb-2">{{ post.title }}</h5>
@@ -161,7 +172,10 @@
                     <div class="mb-2 p-2 border-bottom">
                         <div class="d-flex align-items-center gap-2 mb-1">
 
-                            <strong>{{ comment.author.username }}</strong>
+                            <a href="{% url 'user_profile' comment.author.id %}"
+                                style="text-decoration: none; color: inherit;">
+                                <strong>{{ comment.author.username }}</strong>
+                            </a>
 
                             {% if user == comment.author %}
                             <a href="{% url 'delete_comment' comment.id %}" class="text-secondary"
@@ -210,7 +224,10 @@
 
                         <div class="d-flex align-items-center gap-2 mb-1">
 
-                            <strong>{{ reply.author.username }}</strong>
+                            <a href="{% url 'user_profile' comment.author.id %}"
+                                style="text-decoration: none; color: inherit;">
+                                <strong>{{ reply.author.username }}</strong>
+                            </a>
 
                             {% if user == reply.author %}
                             <a href="{% url 'delete_comment' reply.id %}" class="text-secondary"

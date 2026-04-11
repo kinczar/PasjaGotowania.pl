@@ -6,53 +6,105 @@
 {% block content %}
 
 <style>
-body {
-    background: linear-gradient(135deg, #0f172a, #1e293b, #022c22);
-}
+    body {
+        background: linear-gradient(135deg, #0f172a, #1e293b, #022c22);
+    }
 
-.auth-box {
-    background: rgba(30, 41, 59, 0.8);
-    backdrop-filter: blur(16px);
-    border-radius: 16px;
-    padding: 40px;
-    color: white;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
+    .auth-box {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(16px);
+        border-radius: 16px;
+        padding: 40px;
+        color: white;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    }
 
-.btn-auth {
-    background: linear-gradient(135deg, #22c55e, #16a34a);
-    border: none;
-    color: white;
-    font-weight: 600;
-    transition: 0.3s;
-}
+    .btn-auth {
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: 0.3s;
+    }
 
-.btn-auth:hover {
-    background: linear-gradient(135deg, #16a34a, #15803d);
-    transform: translateY(-2px);
-}
+    .btn-auth:hover {
+        background: linear-gradient(135deg, #16a34a, #15803d);
+        transform: translateY(-2px);
+    }
 </style>
 
 <div class="d-flex align-items-center justify-content-center px-4" style="height: 100vh">
     <div class="auth-box w-100" style="max-width: 400px">
 
-        <h2 class="text-center mb-4">Register</h2>
+        <h2 class="text-center mb-4">Stwórz konto</h2>
 
-        <form method="POST" action="/register">
+        {% if messages %}
+        {% for message in messages %}
+        <div style="
+            background:#ef4444;
+            color:white;
+            padding:10px;
+            border-radius:8px;
+            margin-bottom:15px;
+            text-align:center;
+        ">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+
+        <form method="POST" action="{% url 'register_user' %}" novalidate>
             {% csrf_token %}
 
-            <input type="text" name="username" placeholder="Username" class="form-control mb-3" required>
+            <input type="text" name="username" placeholder="Nazwa" class="form-control mb-3"
+                value="{{ username|default:'' }}">
 
-            <input type="email" name="email" placeholder="Email" class="form-control mb-3" required>
+            <input type="email" name="email" placeholder="Email" class="form-control mb-3"
+                value="{{ email|default:'' }}">
 
-            <input type="password" name="password" placeholder="Password" class="form-control mb-3" required>
+            <input type="password" name="password" id="password" placeholder="Hasło" class="form-control mb-2">
+
+            <small id="passwordHelp" style="color:#cbd5e1; font-size:13px;">
+                Hasło musi mieć:
+                <ul style="margin:5px 0 0 15px; margin-bottom:20px;">
+                    <li id="length">
+                        minimum 8 znaków
+                    </li>
+                    <li id="uppercase">
+                        jedną dużą literę
+                    </li>
+                    <li id="number">
+                        jedną cyfrę
+                    </li>
+                </ul>
+            </small>
 
             <button type="submit" class="btn btn-auth w-100">
-                Register
+                Zarejestruj się
             </button>
         </form>
 
     </div>
 </div>
+
+<script>
+    const passwordInput = document.getElementById("password");
+    const lengthRule = document.getElementById("length");
+    const uppercaseRule = document.getElementById("uppercase");
+    const numberRule = document.getElementById("number");
+
+    passwordInput.addEventListener("input", function () {
+        const value = passwordInput.value;
+
+        // długość
+        lengthRule.style.color = value.length >= 8 ? "#22c55e" : "#ef4444";
+
+        // duża litera
+        uppercaseRule.style.color = /[A-Z]/.test(value) ? "#22c55e" : "#ef4444";
+
+        // cyfra
+        numberRule.style.color = /[0-9]/.test(value) ? "#22c55e" : "#ef4444";
+    });
+</script>
 
 {% endblock %}
