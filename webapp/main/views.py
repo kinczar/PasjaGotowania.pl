@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+import re
 
 from .models import Recipe
 
@@ -87,11 +88,57 @@ def register(request):
         return redirect('home')
 
     if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        # 🔴 pusty email
+        if not email:
+            messages.error(request, "Email jest wymagany")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        # 🔴 format emaila
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            messages.error(request, "Podaj poprawny adres email")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        # 🔴 email istnieje
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Użytkownik o tym emailu już istnieje")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        # 🔴 username istnieje
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Taka nazwa użytkownika już istnieje")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        # 🔴 hasło
+        if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[0-9]', password):
+            messages.error(request, "Hasło musi mieć min. 8 znaków, dużą literę i cyfrę")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        # 🔴 tworzenie usera
         user = User.objects.create_user(
-            request.POST['username'],
-            request.POST['email'],
-            request.POST['password']
+            username=username,
+            email=email,
+            password=password
         )
+
         login(request, user)
         return redirect('home')
 
@@ -125,12 +172,16 @@ def recipes(request):
 
     if request.user.is_authenticated:
         favorite_ids = request.user.favorite_recipes.values_list('id', flat=True)
+        saved_posts = request.user.saved_posts.all()
+    else:
+        saved_posts = None
 
     return render(request, "main/recipes.html", {
         "query": query,
         "results": results,
         "category": category,
         "favorite_ids": favorite_ids,
+        "saved_posts": saved_posts,
     })
 
 
@@ -214,4 +265,10 @@ def saved_posts(request):
 
     return render(request, "main/recipes.html", {
         "saved_posts": saved_posts
+    })
+
+def user_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    return render(request, "main/user_profile.html", {
+        "profile_user": user
     })

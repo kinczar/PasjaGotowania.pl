@@ -1,31 +1,33 @@
 {% extends 'main/layout/layout.html' %}
 
-{% block title %}Mój profil{% endblock %}
+{% block title %}Profil{% endblock %}
 
 {% block content %}
 <div class="profile-wrapper">
     <div class="profile-card">
-        <h2>Mój profil</h2>
+        <h2>Profil użytkownika</h2>
 
-        {% if user.profile.profile_picture %}
-            <img src="{{ user.profile.profile_picture.url }}" alt="Zdjęcie profilowe" class="profile-image">
+        {% if profile_user.profile.profile_picture %}
+        <img src="{{ profile_user.profile.profile_picture.url }}" alt="Zdjęcie profilowe" class="profile-image">
         {% else %}
-            <div class="no-image">Brak zdjęcia profilowego</div>
+        <div class="no-image">Brak zdjęcia profilowego</div>
         {% endif %}
 
-        <p><strong>Nazwa użytkownika:</strong> {{ user.username }}</p>
-        <p><strong>Email:</strong> {{ user.email }}</p>
-        <p><strong>Imię:</strong> {{ user.first_name }}</p>
-        <p><strong>Nazwisko:</strong> {{ user.last_name }}</p>
-        <p><strong>Bio:</strong> {{ user.profile.bio }}</p>
+        <p><strong>Nazwa użytkownika:</strong> {{ profile_user.username }}</p>
+        <p><strong>Email:</strong> {{ profile_user.email }}</p>
+        <p><strong>Imię:</strong> {{ profile_user.first_name }}</p>
+        <p><strong>Nazwisko:</strong> {{ profile_user.last_name }}</p>
+        <p><strong>Bio:</strong> {{ profile_user.profile.bio }}</p>
 
         <hr>
 
-        <p><strong>Data dołączenia:</strong> {{ user.date_joined|date:"d.m.Y" }}</p>
+        <p><strong>Data dołączenia:</strong> {{ profile_user.date_joined|date:"d.m.Y" }}</p>
         <p><strong>Liczba postów:</strong> {{ user_posts_count }}</p>
 
+        {% if request.user == profile_user %}
         <a href="{% url 'edit_profile' %}" class="edit-btn">Edytuj profil</a>
         <a href="{% url 'change_password' %}" class="password-btn">Zmień hasło</a>
+        {% endif %}
     </div>
 </div>
 
@@ -70,7 +72,7 @@
         height: 140px;
         margin: 0 auto 20px auto;
         border-radius: 50%;
-        background: rgba(255,255,255,0.1);
+        background: rgba(255, 255, 255, 0.1);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -112,6 +114,5 @@
     .password-btn:hover {
         background-color: #334155;
     }
-
 </style>
 {% endblock %}
