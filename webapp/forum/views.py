@@ -65,12 +65,15 @@ def add_post(request):
             post.save()
 
             if post.post_type == "recipe":
-                Recipe.objects.create(
-                    title=post.title,
-                    description=post.body,
-                    ingredients=post.ingredients if post.ingredients else "",
-                    instructions=post.body,
-                    category="Przepis z forum"
+                Recipe.objects.update_or_create(
+                    forum_post_id=post.id,
+                    defaults={
+                        "title": post.title,
+                        "description": post.body,
+                        "ingredients": post.ingredients if post.ingredients else "",
+                        "instructions": post.body,
+                        "category": "Przepis z forum"
+                    }
                 )
 
             return redirect('/forum/')
