@@ -115,25 +115,21 @@ def add_comment(request, post_id):
 
     if request.method == 'POST':
         form = CommentForm(request.POST)
+
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
             comment.author = request.user
+
+            # odpowiedzi na komentarze
+            parent_id = request.POST.get("parent_id")
+            if parent_id:
+                parent = Comment.objects.get(id=parent_id)
+                comment.parent = parent
+
             comment.save()
 
-    if request.method == 'POST': #odpowiadanie na posty
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-
-        parent_id = request.POST.get("parent_id")
-        if parent_id:
-            parent = Comment.objects.get(id=parent_id)
-            comment.parent = parent
-
-        comment.save()
+    return redirect('forum')
 
     return redirect('forum')
 

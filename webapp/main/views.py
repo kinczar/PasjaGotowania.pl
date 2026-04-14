@@ -1,19 +1,17 @@
-# Plik do definiowania widoków, które są renderowane za pomocą szablonizatora Jinja oraz wyświetlane w przeglądarce
-
 from django.http import HttpResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
-from django.contrib import messages  # to show message back for errors
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from difflib import get_close_matches
 import unicodedata
+import re
 
 from .models import Recipe
 
 
-# Create your views here.
 def index(request):
     return render(request, 'main/index.html')
 
@@ -60,8 +58,6 @@ def about(request):
     return render(request, 'main/about.html')
 
 
-# Using the Django authentication system (Django Documentation)
-# https://docs.djangoproject.com/en/5.1/topics/auth/default/
 def login_user(request):
     if request.user.is_authenticated:
         return redirect('home')
@@ -71,8 +67,10 @@ def login_user(request):
             username=request.POST['username'],
             password=request.POST['password']
         )
+
         if user is not None:
             login(request, user)
+
             if request.session.get('next'):
                 return redirect(request.session.pop('next'))
 
@@ -92,11 +90,51 @@ def register(request):
         return redirect('home')
 
     if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+
+        if not email:
+            messages.error(request, "Email jest wymagany")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            messages.error(request, "Podaj poprawny adres email")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Użytkownik o tym emailu już istnieje")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Taka nazwa użytkownika już istnieje")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
+        if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[0-9]', password):
+            messages.error(request, "Hasło musi mieć min. 8 znaków, dużą literę i cyfrę")
+            return render(request, 'main/users/register.html', {
+                'username': username,
+                'email': email
+            })
+
         user = User.objects.create_user(
-            request.POST['username'],
-            request.POST['email'],
-            request.POST['password']
+            username=username,
+            email=email,
+            password=password
         )
+
         login(request, user)
         return redirect('home')
 
@@ -159,12 +197,16 @@ def recipes(request):
 
     if request.user.is_authenticated:
         favorite_ids = request.user.favorite_recipes.values_list('id', flat=True)
+        saved_posts = request.user.saved_posts.all()
+    else:
+        saved_posts = None
 
     return render(request, "main/recipes.html", {
         "query": query,
         "results": results,
         "category": category,
         "favorite_ids": favorite_ids,
+        "saved_posts": saved_posts,
     })
 
 
@@ -186,7 +228,55 @@ def toggle_favorite(request, id):
 
 
 def health(request):
-    return render(request, 'main/health.html')
+    bmi = None
+    category = None
+    calories = None
+
+    if request.method == "POST":
+        height = request.POST.get("height")
+        weight = request.POST.get("weight")
+
+        if height and weight:
+            try:
+                height = float(height)
+                weight = float(weight)
+
+                height_m = height / 100
+                bmi = round(weight / (height_m ** 2), 2)
+
+                if bmi < 18.5:
+                    category = "Niedowaga"
+                elif bmi < 25:
+                    category = "Prawidłowa"
+                elif bmi < 30:
+                    category = "Nadwaga"
+                else:
+                    category = "Otyłość"
+            except:
+                pass
+
+        cal_weight = request.POST.get("cal_weight")
+        goal = request.POST.get("goal")
+
+        if cal_weight and goal:
+            try:
+                cal_weight = float(cal_weight)
+                base = cal_weight * 24
+
+                if goal == "lose":
+                    calories = int(base - 300)
+                elif goal == "maintain":
+                    calories = int(base)
+                elif goal == "gain":
+                    calories = int(base + 300)
+            except:
+                pass
+
+    return render(request, "main/health.html", {
+        "bmi": bmi,
+        "category": category,
+        "calories": calories
+    })
 
 
 @login_required
@@ -195,4 +285,11 @@ def saved_posts(request):
 
     return render(request, "main/recipes.html", {
         "saved_posts": saved_posts
+    })
+
+
+def user_profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    return render(request, "main/user_profile.html", {
+        "profile_user": user
     })

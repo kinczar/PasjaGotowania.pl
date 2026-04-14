@@ -5,12 +5,24 @@ from .forms import UserUpdateForm, ProfileUpdateForm
 from forum.models import Post
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
 
 @login_required
-def profile(request):
-    user_posts_count = Post.objects.filter(author=request.user).count()
+def profile(request, user_id=None):
+
+    if user_id:
+        profile_user = get_object_or_404(User, id=user_id)
+    else:
+        profile_user = request.user
+
+    user_posts_count = Post.objects.filter(author=profile_user).count()
 
     context = {
+        'profile_user': profile_user,
         'user_posts_count': user_posts_count,
     }
 
@@ -53,3 +65,14 @@ def change_password(request):
         form = PasswordChangeForm(request.user)
 
     return render(request, 'accounts/change_password.html', {'form': form})
+
+
+def user_profile(request, user_id):
+    user_obj = get_object_or_404(User, id=user_id)
+
+    user_posts_count = Post.objects.filter(author=user_obj).count()
+
+    return render(request, 'accounts/profile.html', {
+        'profile_user': user_obj,
+        'user_posts_count': user_posts_count,
+    })
