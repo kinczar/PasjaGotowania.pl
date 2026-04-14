@@ -39,6 +39,10 @@ def edit_profile(request):
         )
 
         if user_form.is_valid() and profile_form.is_valid():
+            if request.POST.get('remove_picture'):
+                request.user.profile.profile_picture = None
+                request.user.profile.save()
+
             user_form.save()
             profile_form.save()
             messages.success(request, "Profil został zaktualizowany!")

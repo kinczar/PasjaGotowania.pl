@@ -5,68 +5,60 @@
 
 <div class="sidebar d-flex flex-column flex-shrink-0 p-3">
 
-   <a href="/" class="d-flex align-items-center mb-4 text-white text-decoration-none gap-2">
-      <img src="{% static 'main/images/logo.svg' %}"
-           style="height:150px; border-radius:20px;">
-   </a>
-
-    <ul class="nav nav-pills flex-column mb-auto">
-
-{% for link in links %}
-    <li class="nav-item">
-
-    <a href="{{ link.href }}"
-       class="nav-link
-       {% if request.path|cut:'/' == link.href|cut:'/' %}
-            active
-       {% else %}
-            text-white
-       {% endif %}
-    ">
-
-        <i class="fa-solid {{ link.icon }}"></i>
-        <span>{{ link.name }}</span>
-
+    <a href="/" class="d-flex align-items-center mb-4 text-white text-decoration-none gap-2">
+        <img src="{% static 'main/images/logo.svg' %}"
+             style="height:150px; border-radius:20px;"
+             alt="Logo Pasja Gotowania">
     </a>
 
-    </li>
-{% endfor %}
-
+    <ul class="nav nav-pills flex-column mb-auto">
+        {% for link in links %}
+            <li class="nav-item">
+                <a href="{{ link.href }}"
+                   class="nav-link {% if request.path|cut:'/' == link.href|cut:'/' %}active{% else %}text-white{% endif %}">
+                    <i class="fa-solid {{ link.icon }}"></i>
+                    <span>{{ link.name }}</span>
+                </a>
+            </li>
+        {% endfor %}
     </ul>
 
     <hr>
 
     {% if request.user.is_authenticated %}
-    <div class="dropdown mt-auto">
-      <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" data-bs-toggle="dropdown">
+        <div class="dropdown mt-auto">
+            <a href="#"
+               class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+               data-bs-toggle="dropdown"
+               aria-expanded="false">
 
-        {% if request.user.profile.profile_picture %}
-            <img src="{{ request.user.profile.profile_picture.url }}" width="32" height="32" class="rounded-circle me-2">
-        {% else %}
-            <img src="https://github.com/mdo.png" width="32" height="32" class="rounded-circle me-2">
-        {% endif %}
+                <img src="{{ request.user.profile.profile_picture_url }}" width="32" height="32" class="rounded-circle me-2" alt="Zdjęcie profilowe">
 
-        <strong>{{ request.user.username }}</strong>
-      </a>
+                <strong>{{ request.user.username }}</strong>
+            </a>
 
-      <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-        <li><a class="dropdown-item" href="{% url 'profile' %}">My profile</a></li>
-        <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit profile</a></li>
-        <li><hr class="dropdown-divider"></li>
-        <li>
-          <form method="POST" action="/logout">
-            {% csrf_token %}
-            <button class="dropdown-item btn btn-link" type="submit">Logout</button>
-          </form>
-        </li>
-      </ul>
-    </div>
+            <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
+                <li>
+                    <a class="dropdown-item" href="{% url 'profile' %}">Mój profil</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'edit_profile' %}">Edytuj profil</a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form method="POST" action="/logout">
+                        {% csrf_token %}
+                        <button class="dropdown-item btn btn-link" type="submit">Wyloguj się</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
 
     {% else %}
-    <div class="mt-auto">
-      <a class="btn btn-primary w-100 mb-2" href="/login">Login</a>
-      <a class="btn btn-info w-100" href="/register">Register</a>
-    </div>
+        <div class="mt-auto">
+            <a class="btn btn-primary w-100 mb-2" href="/login">Zaloguj się</a>
+            <a class="btn btn-info w-100" href="/register">Zarejestruj się</a>
+        </div>
     {% endif %}
 
 </div>
