@@ -98,6 +98,7 @@ def recipes(request):
     category = request.GET.get("category")
     results = []
     favorite_ids = []
+    favorite_recipes = []
 
     if query or category:
         results = Recipe.objects.all()
@@ -115,12 +116,14 @@ def recipes(request):
 
     if request.user.is_authenticated:
         favorite_ids = request.user.favorite_recipes.values_list('id', flat=True)
+        favorite_recipes = request.user.favorite_recipes.all()
 
     return render(request, "main/recipes.html", {
         "query": query,
         "results": results,
         "category": category,
         "favorite_ids": favorite_ids,
+        "favorite_recipes": favorite_recipes,
     })
 
 def recipe_detail(request, id):

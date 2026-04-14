@@ -305,9 +305,9 @@
     <h3>⭐ Ulubione przepisy</h3>
 
     {% if user.is_authenticated %}
-        {% if favorite_ids %}
+        {% if favorite_recipes %}
             <ul>
-                {% for recipe in user.favorite_recipes.all %}
+                {% for recipe in favorite_recipes %}
                     <li>
                         <a href="{% url 'recipe_detail' recipe.id %}" class="favorite-link">
                             {{ recipe.title }}
