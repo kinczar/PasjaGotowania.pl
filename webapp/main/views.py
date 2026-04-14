@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from difflib import get_close_matches
+import unicodedata
 import re
 
 from .models import Recipe
@@ -92,7 +94,6 @@ def register(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
 
-        # 🔴 pusty email
         if not email:
             messages.error(request, "Email jest wymagany")
             return render(request, 'main/users/register.html', {
@@ -100,7 +101,6 @@ def register(request):
                 'email': email
             })
 
-        # 🔴 format emaila
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             messages.error(request, "Podaj poprawny adres email")
             return render(request, 'main/users/register.html', {
@@ -108,7 +108,6 @@ def register(request):
                 'email': email
             })
 
-        # 🔴 email istnieje
         if User.objects.filter(email=email).exists():
             messages.error(request, "Użytkownik o tym emailu już istnieje")
             return render(request, 'main/users/register.html', {
@@ -116,7 +115,6 @@ def register(request):
                 'email': email
             })
 
-        # 🔴 username istnieje
         if User.objects.filter(username=username).exists():
             messages.error(request, "Taka nazwa użytkownika już istnieje")
             return render(request, 'main/users/register.html', {
@@ -124,7 +122,6 @@ def register(request):
                 'email': email
             })
 
-        # 🔴 hasło
         if len(password) < 8 or not re.search(r'[A-Z]', password) or not re.search(r'[0-9]', password):
             messages.error(request, "Hasło musi mieć min. 8 znaków, dużą literę i cyfrę")
             return render(request, 'main/users/register.html', {
@@ -132,7 +129,6 @@ def register(request):
                 'email': email
             })
 
-        # 🔴 tworzenie usera
         user = User.objects.create_user(
             username=username,
             email=email,
@@ -150,9 +146,18 @@ def logout_user(request):
     return redirect('home')
 
 
+def normalize_text(text):
+    text = text.lower().strip()
+    text = ''.join(
+        c for c in unicodedata.normalize('NFD', text)
+        if unicodedata.category(c) != 'Mn'
+    )
+    return text
+
+
 def recipes(request):
-    query = request.GET.get("q")
-    category = request.GET.get("category")
+    query = request.GET.get("q", "").strip()
+    category = request.GET.get("category", "").strip()
     results = []
     favorite_ids = []
 
@@ -160,12 +165,32 @@ def recipes(request):
         results = Recipe.objects.all()
 
         if query:
-            results = results.filter(
+            normal_results = results.filter(
                 Q(title__icontains=query) |
                 Q(description__icontains=query) |
                 Q(category__icontains=query) |
                 Q(ingredients__icontains=query)
-            )
+            ).distinct()
+
+            if normal_results.exists():
+                results = normal_results
+            else:
+                all_recipes = Recipe.objects.all()
+
+                title_map = {}
+                for recipe in all_recipes:
+                    normalized_title = normalize_text(recipe.title)
+                    title_map[normalized_title] = recipe.id
+
+                close_titles = get_close_matches(
+                    normalize_text(query),
+                    title_map.keys(),
+                    n=10,
+                    cutoff=0.6
+                )
+
+                matched_ids = [title_map[title] for title in close_titles]
+                results = Recipe.objects.filter(id__in=matched_ids)
 
         if category:
             results = results.filter(category__icontains=category)
@@ -202,15 +227,12 @@ def toggle_favorite(request, id):
     return redirect('recipes')
 
 
-# 🔥 TU JEST MAGIA (BMI + KALORIE)
 def health(request):
     bmi = None
     category = None
     calories = None
 
     if request.method == "POST":
-
-        # BMI
         height = request.POST.get("height")
         weight = request.POST.get("weight")
 
@@ -233,7 +255,6 @@ def health(request):
             except:
                 pass
 
-        # 🔥 KALORIE
         cal_weight = request.POST.get("cal_weight")
         goal = request.POST.get("goal")
 
@@ -248,7 +269,6 @@ def health(request):
                     calories = int(base)
                 elif goal == "gain":
                     calories = int(base + 300)
-
             except:
                 pass
 
@@ -266,6 +286,7 @@ def saved_posts(request):
     return render(request, "main/recipes.html", {
         "saved_posts": saved_posts
     })
+
 
 def user_profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
