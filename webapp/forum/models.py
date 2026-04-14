@@ -17,6 +17,10 @@ class Post(models.Model):
         
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField('Post title', max_length=100, null=False, blank=False)
+    calories = models.IntegerField(null=True, blank=True)
+    servings = models.IntegerField(null=True, blank=True)
+    time = models.CharField(max_length=100, null=True, blank=True)
+    ingredients = models.TextField(null=True, blank=True)
     body = models.TextField('Post body', null=False, blank=True)
     published_at = models.DateTimeField(auto_now_add=True)
     image = CloudinaryField('image', blank=True, null=True, folder='posts/') #nazwa specjalnego pola dla aplikacji do trzymanai zdjęć w bazie
@@ -47,4 +51,4 @@ class Comment(models.Model):
 
     def is_reply(self):
         return self.parent is not None
-    
+

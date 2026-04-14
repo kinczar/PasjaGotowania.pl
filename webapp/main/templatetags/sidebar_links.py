@@ -5,20 +5,23 @@ register = template.Library();
 @register.simple_tag
 def get_links():
     return [{
-        'name': 'Home',
+        'name': 'Strona główna',
         'href': '/',
         'icon': 'fa-house',
     }, {
-        'name': 'Recipes',
+        'name': 'Przepisy',
         'href': '/recipes',
         'icon': 'fa-utensils',
-    },{
+    }, {
         'name': 'Forum',
         'href': '/forum',
-        'icon': 'fa-comment', #look for your icon here https://fontawesome.com/search?ic=free
-    },{
-        'name': 'Add post',
+        'icon': 'fa-comment',
+    }, {
+        'name': 'Dodaj wpis',
         'href': '/forum/add/',
         'icon': 'fa-plus',
+    }, {
+        'name': 'Zdrowie',
+        'href': '/health',
+        'icon': 'fa-heart',
     }]
-    

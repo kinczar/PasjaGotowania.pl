@@ -1,0 +1,15 @@
+{% extends 'main/layout/layout.html' %}
+
+{% block content %}
+
+<div style="text-align:center; margin-top:50px; color:white;">
+
+    <img src="{{ profile_user.profile.image.url }}"
+        style="width:120px; height:120px; border-radius:50%; object-fit:cover;">
+
+    <h2>{{ profile_user.username }}</h2>
+    <p>{{ profile_user.email }}</p>
+
+</div>
+
+{% endblock %}

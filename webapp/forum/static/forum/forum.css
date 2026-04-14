@@ -27,4 +27,97 @@
 }
 
 
+/* ===================== */
+/* SIDEBAR FIX + DESIGN */
+/* ===================== */
 
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 340px;
+    height: 100vh;
+    overflow-y: auto;
+    z-index: 1000;
+
+    padding: 25px 18px;
+
+    background: linear-gradient(180deg, #0f172a, #020617);
+    border-right: 1px solid rgba(255,255,255,0.05);
+}
+
+/* logo */
+.sidebar img {
+    margin-bottom: 25px;
+}
+
+/* element listy */
+.sidebar .nav-item {
+    margin-bottom: 10px;
+}
+
+/* linki */
+.sidebar .nav-link {
+    color: #cbd5e1 !important;
+    border-radius: 12px !important;
+
+    font-size: 18px !important;
+    font-weight: 600 !important;
+
+    padding: 14px 16px !important;
+
+    display: flex;
+    align-items: center;
+
+    transition: 0.2s;
+}
+
+/* hover */
+.sidebar .nav-link:hover {
+    background: rgba(255,255,255,0.08);
+    color: white !important;
+    transform: translateX(4px);
+}
+
+/* aktywny */
+.sidebar .nav-link.active {
+    background: linear-gradient(90deg, #22c55e, #06b6d4);
+    color: white !important;
+}
+
+/* ikonki */
+.sidebar i {
+    margin-right: 12px !important;
+    font-size: 20px !important;
+}
+
+/* ===================== */
+/* HARD OVERRIDE SIDEBAR */
+/* ===================== */
+
+.sidebar {
+    width: 360px !important;
+    padding: 30px 20px !important;
+}
+
+/* linki */
+.sidebar .nav-pills .nav-link {
+    font-size: 19px !important;
+    font-weight: 600 !important;
+    padding: 16px 18px !important;
+    border-radius: 14px !important;
+}
+
+/* ikonki */
+.sidebar .nav-pills .nav-link i {
+    font-size: 22px !important;
+    margin-right: 14px !important;
+}
+
+/* odstępy */
+.sidebar .nav-item {
+    margin-bottom: 12px !important;
+}
+.sidebar {
+    box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+}
