@@ -6,14 +6,66 @@
 <style>
     body {
         background: linear-gradient(135deg, #0f172a, #0b1120, #1e293b);
+        margin: 0;
+        overflow: hidden;
     }
 
     .recipes-wrapper {
-        min-height: 100vh;
+        height: 100vh;
+        overflow: hidden;
+        padding: 20px 20px 20px 40px;
         display: flex;
         align-items: center;
-        justify-content: center;
-        padding: 20px 40px 20px 180px;
+        justify-content: flex-start;
+        box-sizing: border-box;
+    }
+
+    .recipes-layout {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+        justify-content: flex-start;
+        width: 100%;
+        max-width: 1380px;
+        margin: 0;
+    }
+
+    .left-column {
+        flex: 1.9;
+        max-width: 980px;
+        max-height: calc(100vh - 40px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding-right: 6px;
+    }
+
+    .left-column::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .left-column::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .left-column::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 10px;
+    }
+
+    .left-column::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.28);
+    }
+
+    .right-column {
+        flex: 0.85;
+        max-width: 430px;
+        display: flex;
+        flex-direction: column;
+        gap: 22px;
+        max-height: calc(100vh - 40px);
+        overflow: auto;
+        overflow-x: hidden;
+        padding-right: 4px;
     }
 
     .glass-card {
@@ -22,19 +74,17 @@
         -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
-        padding: 40px 30px;
+        padding: 56px 42px;
         color: white;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         width: 100%;
-        max-width: 920px;
         text-align: center;
-        margin: 0 auto;
     }
 
     .glass-card h1 {
-        font-size: 2.5rem;
+        font-size: 4rem;
         font-weight: 700;
-        margin-bottom: 15px;
+        margin-bottom: 18px;
         color: #fff;
     }
 
@@ -55,13 +105,14 @@
 
     .search-input {
         width: 100%;
-        max-width: 500px;
-        padding: 12px 16px;
-        border-radius: 8px;
+        max-width: 620px;
+        padding: 18px 20px;
+        border-radius: 10px;
         border: 1px solid rgba(255, 255, 255, 0.15);
         background: rgba(255, 255, 255, 0.08);
         color: white;
         outline: none;
+        font-size: 1.15rem;
     }
 
     .search-input::placeholder {
@@ -69,19 +120,20 @@
     }
 
     .btn-custom {
-        background: #facc15;
-        color: #000;
+        background: linear-gradient(90deg, #22c55e, #22c1c3);
+        color: white;
         font-weight: 600;
         border: none;
-        padding: 12px 24px;
-        border-radius: 6px;
+        padding: 14px 28px;
+        border-radius: 8px;
         text-decoration: none;
         display: inline-block;
+        font-size: 1.05rem;
     }
 
     .btn-custom:hover {
-        background: #eab308;
-        color: #000;
+        background: linear-gradient(90deg, #16a34a, #0ea5a8);
+        color: white;
     }
 
     .categories {
@@ -112,10 +164,6 @@
     .category-btn:hover {
         background: rgba(255, 255, 255, 0.15);
         transform: translateY(-2px);
-    }
-
-    .category-btn:hover {
-        background: rgba(255, 255, 255, 0.16);
     }
 
     .results-box {
@@ -198,16 +246,21 @@
     }
 
     .favorites-panel {
-        margin-top: 30px;
         text-align: left;
         background: rgba(255, 255, 255, 0.06);
         border-radius: 10px;
-        padding: 20px;
+        padding: 24px;
     }
 
     .favorites-panel h3 {
         color: white;
         margin-bottom: 15px;
+    }
+
+    .favorites-panel h3 i {
+        margin-right: 10px;
+        font-size: 1.1rem;
+        color: #e2e8f0;
     }
 
     .favorites-panel ul {
@@ -229,183 +282,243 @@
     .favorite-link:hover {
         color: #facc15;
     }
+
+    @media (max-width: 1100px) {
+        .recipes-layout {
+            flex-direction: column;
+        }
+
+        .left-column,
+        .right-column {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .recipes-wrapper {
+            padding: 20px;
+        }
+
+        .glass-card {
+            padding: 25px 20px;
+        }
+
+        .glass-card h1 {
+            font-size: 2rem;
+        }
+
+        .search-form {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .search-input {
+            max-width: 100%;
+        }
+    }
+
+    html {
+        height: 100%;
+        overflow: hidden;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 30px 20px;
+        color: #cbd5e1;
+    }
+
+    .no-results i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+        color: #94a3b8;
+    }
+
+    .no-results p {
+        margin: 0;
+        font-size: 1.05rem;
+    }
 </style>
 
 <div class="recipes-wrapper">
-    <div class="glass-card">
-        <h1>Odkryj przepisy</h1>
-        <p>
-            Wyszukaj swoje ulubione danie i znajdź inspirację na szybki obiad,
-            kolację albo deser.
-        </p>
+    <div class="recipes-layout">
 
-        <form method="GET" class="search-form">
-            <input
-                type="text"
-                name="q"
-                value="{{ query|default:'' }}"
-                placeholder="Wpisz nazwę dania..."
-                class="search-input"
-            >
-            <button class="btn-custom" type="submit">Szukaj</button>
-        </form>
+        <div class="left-column">
+            <div class="glass-card">
+                <h1>Odkryj przepisy</h1>
+                <p>
+                    Wyszukaj swoje ulubione danie i znajdź inspirację na szybki obiad,
+                    kolację albo deser.
+                </p>
 
-        <div class="categories">
-            <a href="?category=Pizza" class="category-btn">
-                <i class="fas fa-pizza-slice"></i> Pizza
-            </a>
-
-            <a href="?category=Makarony" class="category-btn">
-                <i class="fas fa-utensils"></i> Makarony
-            </a>
-
-            <a href="?category=Sałatki" class="category-btn">
-                <i class="fas fa-leaf"></i> Sałatki
-            </a>
-
-            <a href="?category=Desery" class="category-btn">
-                <i class="fas fa-ice-cream"></i> Desery
-            </a>
-        </div>
-
-        {% if results %}
-        <div class="results-box">
-            <h3>Wyniki wyszukiwania</h3>
-
-            {% for recipe in results %}
-            <div class="recipe-result-item">
-                <h4>
-                    <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-link">
-                        {{ recipe.title }}
-                    </a>
-                </h4>
-                <p>{{ recipe.description }}</p>
-                <span>Kategoria: {{ recipe.category }}</span>
-
-                {% if user.is_authenticated %}
-                <form method="post" action="{% url 'toggle_favorite' recipe.id %}" class="favorite-form">
-                    {% csrf_token %}
-
-                    {% if recipe.id in favorite_ids %}
-                    <button type="submit" class="favorite-btn">❤️ Usuń z ulubionych</button>
-                    {% else %}
-                    <button type="submit" class="favorite-btn">🤍 Dodaj do ulubionych</button>
-                    {% endif %}
+                <form method="GET" class="search-form">
+                    <input
+                        type="text"
+                        name="q"
+                        value="{{ query|default:'' }}"
+                        placeholder="Wpisz nazwę dania..."
+                        class="search-input"
+                    >
+                    <button class="btn-custom" type="submit">Szukaj</button>
                 </form>
-                {% endif %}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
 
-        <div class="favorites-panel">
-            <h3>⭐ Ulubione przepisy z wyszukiwarki</h3>
+                <div class="categories">
+                    <a href="?category=Pizza" class="category-btn">
+                        <i class="fas fa-pizza-slice"></i> Pizza
+                    </a>
 
-            {% if user.is_authenticated %}
-                {% if favorite_recipes %}
-                    <ul>
-                        {% for recipe in favorite_recipes %}
-                            <li>
-                                <a href="{% url 'recipe_detail' recipe.id %}" class="favorite-link">
+                    <a href="?category=Makarony" class="category-btn">
+                        <i class="fas fa-utensils"></i> Makarony
+                    </a>
+
+                    <a href="?category=Sałatki" class="category-btn">
+                        <i class="fas fa-leaf"></i> Sałatki
+                    </a>
+
+                    <a href="?category=Desery" class="category-btn">
+                        <i class="fas fa-ice-cream"></i> Desery
+                    </a>
+                </div>
+
+                {% if query %}
+                <div class="results-box">
+                    <h3>Wyniki wyszukiwania</h3>
+
+                    {% if results %}
+                        {% for recipe in results %}
+                        <div class="recipe-result-item">
+                            <h4>
+                                <a href="{% url 'recipe_detail' recipe.id %}" class="recipe-link">
                                     {{ recipe.title }}
                                 </a>
-                            </li>
+                            </h4>
+                            <p>{{ recipe.description }}</p>
+                            <span>Kategoria: {{ recipe.category }}</span>
+                        </div>
                         {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Nie masz jeszcze ulubionych przepisów z wyszukiwarki.</p>
+                    {% else %}
+                        <div class="no-results">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <p>Brak wyników dla "<strong>{{ query }}</strong>"</p>
+                        </div>
+                    {% endif %}
+                </div>
                 {% endif %}
-            {% else %}
-                <p>Zaloguj się, aby dodawać przepisy do ulubionych.</p>
-            {% endif %}
+            </div>
         </div>
 
-        <div class="favorites-panel">
-            <h3>💾 Zapisane posty z forum</h3>
+        <div class="right-column">
+            <div class="favorites-panel">
+                <h3><i class="fa-solid fa-heart"></i> Ulubione przepisy z wyszukiwarki</h3>
 
-            {% if user.is_authenticated %}
-                {% if saved_posts %}
-                    {% for post in saved_posts %}
-                    <details class="mb-3 p-3 rounded" style="background:#2b3648;">
-                        <summary style="cursor:pointer; font-weight:bold;">
-                            {{ post.title }}
-                        </summary>
-
-                        <div class="mt-3 px-3 pb-3">
-                            <div class="d-flex align-items-center mb-3">
-                                <a href="{% url 'user_profile' post.author.id %}">
-                                    {% if post.author.profile.profile_picture %}
-                                    <img src="{{ post.author.profile.profile_picture.url }}"
-                                         style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:10px;">
-                                    {% else %}
-                                    <img src="https://via.placeholder.com/40"
-                                         style="border-radius:50%; margin-right:10px;">
-                                    {% endif %}
-                                </a>
-
-                                <div>
-                                    <small style="color:#aaa;">Autor:</small><br>
-                                    <a href="{% url 'user_profile' post.author.id %}"
-                                       style="color:white; text-decoration:none;">
-                                        <strong>{{ post.author.username }}</strong>
+                {% if user.is_authenticated %}
+                    {% if favorite_recipes %}
+                        <ul>
+                            {% for recipe in favorite_recipes %}
+                                <li>
+                                    <a href="{% url 'recipe_detail' recipe.id %}" class="favorite-link">
+                                        {{ recipe.title }}
                                     </a>
-                                </div>
-                            </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>Nie masz jeszcze ulubionych przepisów z wyszukiwarki.</p>
+                    {% endif %}
+                {% else %}
+                    <p>Zaloguj się, aby dodawać przepisy do ulubionych.</p>
+                {% endif %}
+            </div>
 
-                            <div class="d-flex gap-4 flex-wrap">
-                                {% if post.image %}
-                                <img src="{{ post.image.url }}"
-                                     style="width:220px; height:220px; object-fit:cover; border-radius:10px;">
-                                {% endif %}
+            <div class="favorites-panel">
+                <h3><i class="fa-solid fa-bookmark"></i> Zapisane posty z forum</h3>
 
-                                <div style="flex:1; min-width:250px;">
-                                    {% if post.post_type == "recipe" %}
-                                    <div class="mb-2 d-flex gap-3 flex-wrap">
-                                        {% if post.calories %}
-                                        <span><i class="fa-solid fa-fire"></i> {{ post.calories }} kcal</span>
+                {% if user.is_authenticated %}
+                    {% if saved_posts %}
+                        {% for post in saved_posts %}
+                        <details class="mb-3 p-3 rounded" style="background:#2b3648;">
+                            <summary style="cursor:pointer; font-weight:bold;">
+                                {{ post.title }}
+                            </summary>
+
+                            <div class="mt-3 px-3 pb-3">
+                                <div class="d-flex align-items-center mb-3">
+                                    <a href="{% url 'user_profile' post.author.id %}">
+                                        {% if post.author.profile.profile_picture %}
+                                        <img src="{{ post.author.profile.profile_picture.url }}"
+                                             style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:10px;">
+                                        {% else %}
+                                        <img src="https://via.placeholder.com/40"
+                                             style="border-radius:50%; margin-right:10px;">
                                         {% endif %}
+                                    </a>
 
-                                        {% if post.servings %}
-                                        <span><i class="fa-solid fa-utensils"></i> {{ post.servings }} porcji</span>
-                                        {% endif %}
-
-                                        {% if post.time %}
-                                        <span><i class="fa-regular fa-clock"></i> {{ post.time }}</span>
-                                        {% endif %}
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <strong>Składniki:</strong>
-                                        <ol>
-                                            {% for line in post.ingredients.splitlines %}
-                                            <li>{{ line }}</li>
-                                            {% endfor %}
-                                        </ol>
-                                    </div>
-                                    {% endif %}
-
-                                    <div class="mb-2">
-                                        {{ post.body|linebreaks }}
-                                    </div>
-
-                                    <div class="d-flex justify-content-end">
-                                        <a href="{% url 'toggle_save' post.id %}" class="btn btn-sm btn-danger">
-                                            <i class="fa-solid fa-trash"></i>
-                                            Usuń z zapisanych
+                                    <div>
+                                        <small style="color:#aaa;">Autor:</small><br>
+                                        <a href="{% url 'user_profile' post.author.id %}"
+                                           style="color:white; text-decoration:none;">
+                                            <strong>{{ post.author.username }}</strong>
                                         </a>
                                     </div>
                                 </div>
+
+                                <div class="d-flex gap-4 flex-wrap">
+                                    {% if post.image %}
+                                    <img src="{{ post.image.url }}"
+                                         style="width:220px; height:220px; object-fit:cover; border-radius:10px;">
+                                    {% endif %}
+
+                                    <div style="flex:1; min-width:250px;">
+                                        {% if post.post_type == "recipe" %}
+                                        <div class="mb-2 d-flex gap-3 flex-wrap">
+                                            {% if post.calories %}
+                                            <span><i class="fa-solid fa-fire"></i> {{ post.calories }} kcal</span>
+                                            {% endif %}
+
+                                            {% if post.servings %}
+                                            <span><i class="fa-solid fa-utensils"></i> {{ post.servings }} porcji</span>
+                                            {% endif %}
+
+                                            {% if post.time %}
+                                            <span><i class="fa-regular fa-clock"></i> {{ post.time }}</span>
+                                            {% endif %}
+                                        </div>
+
+                                        <div class="mb-2">
+                                            <strong>Składniki:</strong>
+                                            <ol>
+                                                {% for line in post.ingredients.splitlines %}
+                                                <li>{{ line }}</li>
+                                                {% endfor %}
+                                            </ol>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="mb-2">
+                                            {{ post.body|linebreaks }}
+                                        </div>
+
+                                        <div class="d-flex justify-content-end">
+                                            <a href="{% url 'toggle_save' post.id %}" class="btn btn-sm btn-danger">
+                                                <i class="fa-solid fa-trash"></i>
+                                                Usuń z zapisanych
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </details>
-                    {% endfor %}
+                        </details>
+                        {% endfor %}
+                    {% else %}
+                        <p>Nie masz jeszcze zapisanych postów z forum.</p>
+                    {% endif %}
                 {% else %}
-                    <p>Nie masz jeszcze zapisanych postów z forum.</p>
+                    <p>Zaloguj się, aby zapisywać posty z forum.</p>
                 {% endif %}
-            {% else %}
-                <p>Zaloguj się, aby zapisywać posty z forum.</p>
-            {% endif %}
+            </div>
         </div>
+
     </div>
 </div>
 {% endblock %}
