@@ -133,23 +133,26 @@
         <!-- PRZYCISKI -->
         <div class="d-flex gap-3">
 
-            <a href="{% url 'like_post' post.id %}" class="btn btn-outline-primary btn-sm">
-                <i class="fa-solid fa-thumbs-up"></i>
-                Like ({{ post.likes.count }})
-            </a>
+            <button type="button" class="btn btn-sm like-post-btn 
+    {% if user in post.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}" data-id="{{ post.id }}">
 
-            <a href="{% url 'toggle_save' post.id %}"
-                class="btn btn-sm {% if user in post.saved_by.all %}btn-success{% else %}btn-outline-success{% endif %}">
+                <i class="fa-solid fa-thumbs-up"></i>
+                Like (<span class="like-count">{{ post.likes.count }}</span>)
+            </button>
+
+            <button type="button"
+                class="btn btn-sm save-btn {% if user in post.saved_by.all %}btn-success{% else %}btn-outline-success{% endif %}"
+                data-id="{{ post.id }}">
 
                 <i class="fa-solid fa-star"></i>
-
-                {% if user in post.saved_by.all %}
-                Zapisano
-                {% else %}
-                Zapisz
-                {% endif %}
-
-            </a>
+                <span class="save-text">
+                    {% if user in post.saved_by.all %}
+                    Zapisano
+                    {% else %}
+                    Zapisz
+                    {% endif %}
+                </span>
+            </button>
 
         </div>
 
@@ -169,7 +172,7 @@
                     {% if not comment.parent %}
 
                     <!-- KOMENTARZ -->
-                    <div class="mb-2 p-2 border-bottom">
+                    <div class="mb-2 p-2 border-bottom" data-comment-id="{{ comment.id }}">
                         <div class="d-flex align-items-center gap-2 mb-1">
 
                             <a href="{% url 'user_profile' comment.author.id %}"
@@ -195,10 +198,12 @@
 
                             <div class="ms-auto d-flex gap-2">
 
-                                <a href="{% url 'like_comment' comment.id %}" class="btn btn-sm btn-outline-primary">
-                                    ({{ comment.likes.count }})
+                                <button type="button" class="btn btn-sm like-comment-btn 
+    {% if user in comment.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}" data-id="{{ comment.id }}">
+
+                                    (<span class="like-count">{{ comment.likes.count }}</span>)
                                     <i class="fa-solid fa-thumbs-up"></i>
-                                </a>
+                                </button>
 
                                 {% if user.is_authenticated %}
                                 {% if request.GET.reply_to == comment.id|stringformat:"s" %}
@@ -208,9 +213,11 @@
                                 </a>
                                 {% else %}
                                 <!-- normalne reply -->
-                                <a href="?reply_to={{ comment.id }}" class="btn btn-sm btn-outline-secondary">
+                                <button type="button" class="btn btn-sm btn-outline-secondary reply-btn"
+                                    data-id="{{ comment.id }}" data-username="{{ comment.author.username }}">
+
                                     <i class="fa-solid fa-reply"></i>
-                                </a>
+                                </button>
                                 {% endif %}
                                 {% endif %}
 
@@ -220,7 +227,7 @@
 
                     <!-- ODPOWIEDZI -->
                     {% for reply in comment.replies.all %}
-                    <div class="ms-4 mt-2 p-2 border rounded bg-light">
+                    <div class="ms-4 mt-2 p-2 border rounded bg-light" data-comment-id="{{ reply.id }}">
 
                         <div class="d-flex align-items-center gap-2 mb-1">
 
@@ -248,10 +255,12 @@
                             <!-- PRAWA STRONA -->
                             <div class="ms-auto d-flex gap-2">
 
-                                <a href="{% url 'like_comment' reply.id %}" class="btn btn-sm btn-outline-primary">
+                                <button type="button" class="btn btn-sm like-comment-btn 
+    {% if user in reply.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}" data-id="{{ reply.id }}">
+
                                     <i class="fa-solid fa-thumbs-up"></i>
-                                    ({{ reply.likes.count }})
-                                </a>
+                                    (<span class="like-count">{{ reply.likes.count }}</span>)
+                                </button>
 
                             </div>
 
@@ -265,6 +274,7 @@
                 </div>
 
                 <!-- FORMULARZ -->
+                <div id="reply-info" class="alert alert-info py-2 mb-2 d-none"></div>
                 <div style="border-top:1px solid #ddd; padding-top:10px;">
                     {% if user.is_authenticated %}
 
@@ -278,10 +288,10 @@
                     {% endfor %}
                     {% endif %}
 
-                    <form method="POST" action="{% url 'add_comment' post.id %}">
+                    <form class="comment-form" data-post-id="{{ post.id }}">
                         {% csrf_token %}
 
-                        <input type="hidden" name="parent_id" value="{{ request.GET.reply_to }}">
+                        <input type="hidden" name="parent_id" class="parent_id">
 
                         <textarea name="content" class="form-control mb-2 mt-2"
                             placeholder="Dodaj komentarz"></textarea>
@@ -299,5 +309,246 @@
 </div>
 
 {% endfor %}
+
+<script>
+
+    // CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== "") {
+            const cookies = document.cookie.split(";");
+            for (let cookie of cookies) {
+                cookie = cookie.trim();
+                if (cookie.startsWith(name + "=")) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    const csrf = getCookie("csrftoken");
+
+    //like post
+    document.querySelectorAll(".like-post-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+
+            const id = this.dataset.id;
+            const count = this.querySelector(".like-count");
+
+            fetch(`/forum/like/${id}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrf
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    count.innerText = data.likes_count;
+
+                    if (data.liked) {
+                        btn.classList.remove("btn-outline-primary");
+                        btn.classList.add("btn-primary");
+                    } else {
+                        btn.classList.remove("btn-primary");
+                        btn.classList.add("btn-outline-primary");
+                    }
+
+                });
+
+        });
+    });
+
+    //like comment
+    document.addEventListener("click", function (e) {
+
+        const btn = e.target.closest(".like-comment-btn");
+        if (!btn) return;
+
+        const id = btn.dataset.id;
+        const count = btn.querySelector(".like-count");
+
+        fetch(`/forum/comment/${id}/like/`, { 
+            method: "POST",
+            headers: {
+                "X-CSRFToken": csrf
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+
+                count.innerText = data.likes_count;
+
+                if (data.liked) {
+                    btn.classList.remove("btn-outline-primary");
+                    btn.classList.add("btn-primary");
+                } else {
+                    btn.classList.remove("btn-primary");
+                    btn.classList.add("btn-outline-primary");
+                }
+
+            });
+
+    });
+
+
+    //save post
+    document.querySelectorAll(".save-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+
+            const id = this.dataset.id;
+            const text = this.querySelector(".save-text");
+
+            fetch(`/forum/save/${id}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrf
+                }
+            })
+                .then(res => res.json())
+                .then(data => {
+
+                    text.innerText = data.saved ? "Zapisano" : "Zapisz";
+
+                    if (data.saved) {
+                        btn.classList.remove("btn-outline-success");
+                        btn.classList.add("btn-success");
+                    } else {
+                        btn.classList.remove("btn-success");
+                        btn.classList.add("btn-outline-success");
+                    }
+
+                });
+
+        });
+    });
+
+    //reply comment
+    document.querySelectorAll(".reply-btn").forEach(btn => {
+        btn.addEventListener("click", function () {
+
+            const commentId = this.dataset.id;
+            const username = this.dataset.username;
+
+            const post = this.closest(".card");
+            const input = post.querySelector(".parent_id");
+            const info = post.querySelector("#reply-info");
+
+            if (input.value == commentId) {
+                input.value = "";
+                info.classList.add("d-none");
+                info.innerText = "";
+
+                this.classList.remove("btn-danger");
+                this.classList.add("btn-outline-secondary");
+            } else {
+                input.value = commentId;
+
+                post.querySelectorAll(".reply-btn").forEach(b => {
+                    b.classList.remove("btn-danger");
+                    b.classList.add("btn-outline-secondary");
+                });
+
+                this.classList.remove("btn-outline-secondary");
+                this.classList.add("btn-danger");
+
+                info.classList.remove("d-none");
+                info.innerHTML = `Odpowiadasz użytkownikowi <strong>${username}</strong>`;
+            }
+
+        });
+    });
+
+    //dodaj komentarz
+    document.querySelectorAll(".comment-form").forEach(form => {
+        form.addEventListener("submit", function (e) {
+
+            e.preventDefault();
+
+            const postId = this.dataset.postId;
+            const textarea = this.querySelector("textarea");
+            const content = textarea.value;
+            const parentId = this.querySelector(".parent_id").value;
+
+            fetch(`/forum/comment/${postId}/`, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrf,
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: `content=${encodeURIComponent(content)}&parent_id=${parentId}`
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error("HTTP ERROR " + res.status);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+
+                    console.log("DATA:", data);
+
+                    if (data.error) return;
+
+                    const commentsBox = this.closest(".p-3")
+                        .querySelector("div[style*='overflow-y']");
+
+                    const newComment = document.createElement("div");
+
+                    if (data.parent_id) {
+                        newComment.className = "ms-4 mt-2 p-2 border rounded bg-light";
+
+                        // znajdź komentarz nadrzędny
+                        const parent = commentsBox.querySelector(`[data-comment-id="${data.parent_id}"]`);
+
+                        if (parent) {
+                            parent.after(newComment);
+                        } else {
+                            commentsBox.appendChild(newComment);
+                        }
+
+                    } else {
+                        newComment.className = "mb-2 p-2 border-bottom";
+                        commentsBox.appendChild(newComment);
+                    }
+
+                    newComment.innerHTML = `
+<div class="d-flex align-items-center gap-2 mb-1">
+    <strong>${data.author}</strong>
+</div>
+
+<div class="d-flex align-items-start">
+    <div style="max-width: 80%;">
+        ${data.content}
+    </div>
+
+    <div class="ms-auto d-flex gap-2">
+
+        <button type="button" class="btn btn-sm btn-outline-primary like-comment-btn" data-id="${data.id}">
+            (<span class="like-count">0</span>)
+            <i class="fa-solid fa-thumbs-up"></i>
+        </button>
+    </div>
+</div>
+`;
+
+                    textarea.value = "";
+                    this.querySelector(".parent_id").value = "";
+
+                    const info = this.closest(".p-3").querySelector("#reply-info");
+                    info.classList.add("d-none");
+                    info.innerText = "";
+
+                })
+                .catch(err => {
+                    console.error("BŁĄD:", err);
+                });
+
+        });
+    });
+
+</script>
 
 {% endblock %}
