@@ -1,4 +1,5 @@
 {% extends 'main/layout/layout.html' %}
+{% load sidebar_links %}
 
 {% block title %}Recipes - Pasja Gotowania{% endblock %}
 
@@ -66,6 +67,23 @@
         overflow: auto;
         overflow-x: hidden;
         padding-right: 4px;
+    }
+
+    .right-column::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .right-column::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .right-column::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 10px;
+    }
+
+    .right-column::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.28);
     }
 
     .glass-card {
@@ -179,16 +197,6 @@
         margin-bottom: 15px;
     }
 
-    .results-box ul {
-        margin: 0;
-        padding-left: 20px;
-        color: #e2e8f0;
-    }
-
-    .results-box li {
-        margin-bottom: 8px;
-    }
-
     .recipe-result-item {
         padding: 16px 0;
         border-bottom: 1px solid rgba(255, 255, 255, 0.12);
@@ -226,7 +234,7 @@
     }
 
     .favorite-form {
-        margin-top: 12px;
+        margin-top: 14px;
     }
 
     .favorite-btn {
@@ -277,10 +285,29 @@
         color: #ffffff;
         text-decoration: none;
         transition: 0.2s ease;
+        font-weight: 600;
     }
 
     .favorite-link:hover {
         color: #facc15;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 30px 20px;
+        color: #cbd5e1;
+    }
+
+    .no-results i {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        display: block;
+        color: #94a3b8;
+    }
+
+    .no-results p {
+        margin: 0;
+        font-size: 1.05rem;
     }
 
     @media (max-width: 1100px) {
@@ -291,6 +318,7 @@
         .left-column,
         .right-column {
             width: 100%;
+            max-width: 100%;
         }
     }
 
@@ -320,24 +348,6 @@
     html {
         height: 100%;
         overflow: hidden;
-    }
-
-    .no-results {
-        text-align: center;
-        padding: 30px 20px;
-        color: #cbd5e1;
-    }
-
-    .no-results i {
-        font-size: 2rem;
-        margin-bottom: 10px;
-        display: block;
-        color: #94a3b8;
-    }
-
-    .no-results p {
-        margin: 0;
-        font-size: 1.05rem;
     }
 </style>
 
@@ -381,7 +391,7 @@
                     </a>
                 </div>
 
-                {% if query %}
+                {% if query or category %}
                 <div class="results-box">
                     <h3>Wyniki wyszukiwania</h3>
 
@@ -393,14 +403,35 @@
                                     {{ recipe.title }}
                                 </a>
                             </h4>
-                            <p>{{ recipe.description }}</p>
-                            <span>Kategoria: {{ recipe.category }}</span>
+
+                            {% if recipe.description %}
+                                <p>{{ recipe.description }}</p>
+                            {% endif %}
+
+                            {% if recipe.category %}
+                                <span>Kategoria: {{ recipe.category }}</span>
+                            {% endif %}
+
+                            {% if user.is_authenticated %}
+                            <form method="POST" action="{% url 'toggle_favorite' recipe.id %}" class="favorite-form">
+                                {% csrf_token %}
+                                {% if recipe.id in favorite_ids %}
+                                    <button type="submit" class="favorite-btn">
+                                        <i class="fa-solid fa-heart-crack"></i> Usuń z ulubionych
+                                    </button>
+                                {% else %}
+                                    <button type="submit" class="favorite-btn">
+                                        <i class="fa-solid fa-heart"></i> Dodaj do ulubionych
+                                    </button>
+                                {% endif %}
+                            </form>
+                            {% endif %}
                         </div>
                         {% endfor %}
                     {% else %}
                         <div class="no-results">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <p>Brak wyników dla "<strong>{{ query }}</strong>"</p>
+                            <p>Brak wyników dla "<strong>{{ query|default:category }}</strong>"</p>
                         </div>
                     {% endif %}
                 </div>
@@ -416,10 +447,17 @@
                     {% if favorite_recipes %}
                         <ul>
                             {% for recipe in favorite_recipes %}
-                                <li>
+                                <li style="margin-bottom: 14px;">
                                     <a href="{% url 'recipe_detail' recipe.id %}" class="favorite-link">
                                         {{ recipe.title }}
                                     </a>
+
+                                    <form method="POST" action="{% url 'toggle_favorite' recipe.id %}" class="favorite-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="favorite-btn" style="margin-top: 8px;">
+                                            <i class="fa-solid fa-trash"></i> Usuń z ulubionych
+                                        </button>
+                                    </form>
                                 </li>
                             {% endfor %}
                         </ul>

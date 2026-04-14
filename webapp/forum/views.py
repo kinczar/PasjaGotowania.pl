@@ -65,6 +65,14 @@ def add_post(request):
             post.save()
 
             if post.post_type == "recipe":
+                prep_time_value = None
+
+                if post.time:
+                    try:
+                        prep_time_value = int(str(post.time).replace(" min", "").strip())
+                    except ValueError:
+                        prep_time_value = None
+
                 Recipe.objects.update_or_create(
                     forum_post_id=post.id,
                     defaults={
@@ -72,7 +80,11 @@ def add_post(request):
                         "description": post.body,
                         "ingredients": post.ingredients if post.ingredients else "",
                         "instructions": post.body,
-                        "category": "Przepis z forum"
+                        "category": "Przepis z forum",
+                        "prep_time": prep_time_value,
+                        "calories": post.calories,
+                        "servings": post.servings,
+                        "image": post.image,
                     }
                 )
 

@@ -10,6 +10,7 @@ import unicodedata
 import re
 
 from .models import Recipe
+from forum.models import Post
 
 
 def index(request):
@@ -198,10 +199,13 @@ def recipes(request):
 
     if request.user.is_authenticated:
         favorite_ids = request.user.favorite_recipes.values_list('id', flat=True)
-        favorite_recipes = request.user.favorite_recipes.all()
+        favorite_recipes = request.user.favorite_recipes.select_related()
+        forum_post_ids = [recipe.forum_post_id for recipe in favorite_recipes if recipe.forum_post_id]
+        forum_posts_map = {post.id: post for post in Post.objects.filter(id__in=forum_post_ids)}
         saved_posts = request.user.saved_posts.all()
     else:
         saved_posts = None
+        forum_posts_map = {}
 
     return render(request, "main/recipes.html", {
         "query": query,
@@ -210,6 +214,7 @@ def recipes(request):
         "favorite_ids": favorite_ids,
         "favorite_recipes": favorite_recipes,
         "saved_posts": saved_posts,
+        "forum_posts_map": forum_posts_map,
     })
 
 
