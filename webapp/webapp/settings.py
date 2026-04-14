@@ -11,8 +11,10 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import os
 from dotenv import load_dotenv
+import os
+
+load_dotenv()
 import cloudinary
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -99,19 +101,20 @@ WSGI_APPLICATION = 'webapp.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.getenv('DB_NAME'),
-        'USER': os.getenv('DB_USER'),
+        'NAME': 'defaultdb',
+        'USER': 'avnadmin',
         'PASSWORD': os.getenv('DB_PASSWORD'),
-        'HOST': os.getenv('DB_HOST'),
-        'PORT': os.getenv('DB_PORT'),
+        'HOST': 'pasjagotowania-pasjagotowania.c.aivencloud.com',
+        'PORT': '23184',
         'OPTIONS': {
-            'ssl': {},
+            'ssl': {'ssl-mode': 'REQUIRED'},
             'charset': 'utf8mb4',
         },
     }
 }
 
-# Cloudinary storage
+
+#TO JEST DO DODAWANIA ZDJĘĆ DO BAZY DANYCH
 CLOUDINARY_STORAGE = {
     'CLOUD_NAME': os.getenv('CLOUD_NAME'),
     'API_KEY': os.getenv('API_KEY'),

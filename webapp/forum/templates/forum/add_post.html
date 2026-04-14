@@ -4,12 +4,12 @@
 
 {% block content %}
 
-<div class="container mt-5">
+<div class="container mt-2">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-md-12">
 
             <div class="card shadow-sm">
-                <div class="card-body">
+                <div class="card-body" style="display:flex; flex-direction:column;">
 
                     <h2 class="mb-4 text-center">Add post</h2>
 
@@ -24,6 +24,11 @@
                         <div class="mb-3">
                             <label class="form-label">Post body</label>
                             {{ form.body }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Kategoria:</label>
+                            {{ form.post_type }}
                         </div>
 
                         <div class="mb-3">

@@ -3,6 +3,18 @@ from django.contrib.auth.models import User
 from cloudinary.models import CloudinaryField #strona do zdjęc w bazie danych
 
 class Post(models.Model):
+
+    POST_TYPES = [
+        ('recipe', 'Przepis'),
+        ('question', 'Porada'),
+    ]
+
+    post_type = models.CharField(
+        max_length=20,
+        choices=POST_TYPES,
+        default='recipe'
+    )
+        
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField('Post title', max_length=100, null=False, blank=False)
     body = models.TextField('Post body', null=False, blank=True)
@@ -19,3 +31,20 @@ class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+    parent = models.ForeignKey( #odpowiadanie na komentarze
+        'self', 
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='replies'
+    )
+
+    likes = models.ManyToManyField(User, related_name="liked_comments", blank=True)
+
+    def total_likes(self):
+        return self.likes.count()
+
+    def is_reply(self):
+        return self.parent is not None
+    

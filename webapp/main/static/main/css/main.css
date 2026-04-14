@@ -123,3 +123,8 @@ body {
 .rating a:hover ~ a i {
     color: gold;
 }
+
+.comments-box {
+    max-height: 200px;   /* wysokość ~3 komentarzy */
+    overflow-y: auto;    /* pojawia się scroll */
+}
