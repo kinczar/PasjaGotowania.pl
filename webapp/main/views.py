@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from difflib import get_close_matches
 import unicodedata
 import re
+from forum.models import Post
 
 from .models import Recipe
 
@@ -295,4 +296,11 @@ def user_profile(request, user_id):
     user = get_object_or_404(User, id=user_id)
     return render(request, "main/user_profile.html", {
         "profile_user": user
+    })
+
+def post_detail(request, id):
+    post = get_object_or_404(Post, id=id)
+
+    return render(request, 'main/detail.html', {
+        'post': post
     })

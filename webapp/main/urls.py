@@ -18,4 +18,5 @@ urlpatterns = [
     path('logout', views.logout_user, name='logout_user'),
 
     path('health/', views.health, name='health'),
+    path("post/<int:id>/", views.post_detail, name="detail"),
 ]
