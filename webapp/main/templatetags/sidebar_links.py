@@ -25,3 +25,7 @@ def get_links():
         'href': '/health',
         'icon': 'fa-heart',
     }]
+
+@register.filter
+def get_item(dictionary, key):
+    return dictionary.get(key)
