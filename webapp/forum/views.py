@@ -8,6 +8,7 @@ from django.contrib.auth.decorators import login_required
 from .forms import CommentForm
 from .models import Comment
 from main.models import Recipe
+from django.http import JsonResponse
 
 # Create your views here.
 def index(request):
@@ -111,14 +112,19 @@ def delete_post(request, post_id):
 #kod na dodawanie like do postow
 @login_required
 def like_post(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+    post = Post.objects.get(id=post_id)
 
     if request.user in post.likes.all():
         post.likes.remove(request.user)
+        liked = False
     else:
         post.likes.add(request.user)
+        liked = True
 
-    return redirect('forum')
+    return JsonResponse({
+        "likes_count": post.likes.count(),
+        "liked": liked
+    })
 
 #dodawanie komentarzy tylko dla zalogowanych
 @login_required
@@ -126,37 +132,43 @@ def add_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
     if request.method == 'POST':
-        form = CommentForm(request.POST)
+        content = request.POST.get("content")
+        parent_id = request.POST.get("parent_id")
 
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
+        comment = Comment.objects.create(
+            post=post,
+            author=request.user,
+            content=content
+        )
 
-            # odpowiedzi na komentarze
-            parent_id = request.POST.get("parent_id")
-            if parent_id:
-                parent = Comment.objects.get(id=parent_id)
-                comment.parent = parent
-
+        if parent_id:
+            comment.parent = Comment.objects.get(id=parent_id)
             comment.save()
 
-    return redirect('forum')
+        return JsonResponse({
+            "content": comment.content,
+            "author": comment.author.username,
+            "parent_id": parent_id
+        })
 
-    return redirect('forum')
+    return JsonResponse({"error": "Invalid request"})
 
+
+@login_required
 def like_comment(request, comment_id):
-    comment = get_object_or_404(Comment, id=comment_id)
+    comment = Comment.objects.get(id=comment_id)
 
-    if request.user.is_authenticated:
-        if request.user in comment.likes.all():
-            comment.likes.remove(request.user)
-        else:
-            comment.likes.add(request.user)
-    
-    return redirect('forum')
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+        liked = False
+    else:
+        comment.likes.add(request.user)
+        liked = True
 
-from django.contrib.auth.decorators import login_required
+    return JsonResponse({
+        "likes_count": comment.likes.count(),
+        "liked": liked
+    })
 
 @login_required
 def delete_comment(request, comment_id):
@@ -170,11 +182,15 @@ def delete_comment(request, comment_id):
 
 @login_required
 def toggle_save(request, post_id):
-    post = get_object_or_404(Post, id=post_id)
+    post = Post.objects.get(id=post_id)
 
     if request.user in post.saved_by.all():
         post.saved_by.remove(request.user)
+        saved = False
     else:
         post.saved_by.add(request.user)
+        saved = True
 
-    return redirect('forum')
+    return JsonResponse({
+        "saved": saved
+    })
