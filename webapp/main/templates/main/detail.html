@@ -57,26 +57,92 @@
     .back-link:hover {
         text-decoration: underline;
     }
+
+    .meta {
+        display: flex;
+        gap: 35px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+        color: #cbd5e1;
+        font-size: 1.05rem;
+    }
 </style>
 
 <div class="detail-wrapper">
     <div class="detail-card">
-        <h1>{{ recipe.title }}</h1>
 
-        <p><span class="detail-label">Opis:</span> {{ recipe.description }}</p>
+        <h1>{{ post.title }}</h1>
+
+        <!-- Autor -->
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:15px;">
+
+            <!-- napis Autor -->
+            <span class="detail-label">Autor:</span>
+
+            <!-- avatar -->
+            <a href="{% url 'user_profile' post.author.id %}">
+                {% if post.author.profile.profile_picture %}
+                <img src="{{ post.author.profile.profile_picture.url }}"
+                    style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
+                {% else %}
+                <img src="https://via.placeholder.com/40" style="width:40px; height:40px; border-radius:50%;">
+                {% endif %}
+            </a>
+
+            <!-- nick -->
+            <a href="{% url 'user_profile' post.author.id %}"
+                style="color:#facc15; text-decoration:none; font-size:1.2rem; font-weight:600;">
+                {{ post.author.username }}
+            </a>
+
+        </div>
+
+        <!-- kalorie, porcje itp -->
+        {% if post.post_type == "recipe" %}
+        <div class="meta">
+            {% if post.calories %}
+            <span>
+                <i class="fa-solid fa-fire"></i>
+                {{ post.calories }} kcal</span>
+            {% endif %}
+
+            {% if post.servings %}
+            <span>
+                <i class="fa-solid fa-utensils"></i>
+                {{ post.servings }} porcji</span>
+            {% endif %}
+
+            {% if post.time %}
+            <span>
+                <i class="fa-regular fa-clock"></i>
+                {{ post.time }}</span>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- OPIS -->
+        <p>
+            <span class="detail-label">Opis:</span><br>
+            {{ post.body|linebreaks }}
+        </p>
+
+        <!-- SKŁADNIKI -->
+        {% if post.post_type == "recipe" and post.ingredients %}
         <div>
-            <p class="detail-label">Składniki:</p>
+            <span class="detail-label">Składniki:</span><br>
             <ul>
-                {% for item in recipe.ingredients.splitlines %}
+                {% for item in post.ingredients.splitlines %}
                 <li>{{ item }}</li>
                 {% endfor %}
             </ul>
         </div>
-        <p><span class="detail-label">Instrukcje:</span><br>{{ recipe.instructions|linebreaksbr }}</p>
-        <p><span class="detail-label">Kategoria:</span> {{ recipe.category }}</p>
-        <p><span class="detail-label">Czas przygotowania:</span> {{ recipe.prep_time }} min</p>
+        {% endif %}
 
-        <a href="{% url 'recipes' %}" class="back-link">← Wróć do wyszukiwarki</a>
+        <!-- POWRÓT -->
+        <a href="{% url 'recipes' %}" class="back-link">
+            ← Wróć
+        </a>
+
     </div>
 </div>
 {% endblock %}
