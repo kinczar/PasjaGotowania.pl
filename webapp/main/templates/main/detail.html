@@ -1,6 +1,11 @@
 {% extends 'main/layout/layout.html' %}
 
-{% block title %}{{ recipe.title }} - Pasja Gotowania{% endblock %}
+{% block title %}
+{% if recipe %}
+{{ recipe.title }}
+{% else %}
+{{ post.title }}
+{% endif %} - Pasja Gotowania{% endblock %}
 
 {% block content %}
 <style>
@@ -19,7 +24,6 @@
     .detail-card {
         background: rgba(30, 41, 59, 0.75);
         backdrop-filter: blur(16px);
-        -webkit-backdrop-filter: blur(16px);
         border: 1px solid rgba(255, 255, 255, 0.1);
         border-radius: 12px;
         padding: 40px 30px;
@@ -27,13 +31,11 @@
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         width: 100%;
         max-width: 1000px;
-        margin: 0 auto;
     }
 
     .detail-card h1 {
         font-size: 2.8rem;
         margin-bottom: 24px;
-        color: white;
     }
 
     .recipe-top {
@@ -48,7 +50,6 @@
         height: 320px;
         object-fit: cover;
         border-radius: 14px;
-        box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
     }
 
     .recipe-info {
@@ -62,38 +63,11 @@
         flex-wrap: wrap;
         margin-bottom: 20px;
         color: #e2e8f0;
-        font-size: 1rem;
-    }
-
-    .recipe-meta span {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .detail-card p {
-        color: #cbd5e1;
-        line-height: 1.7;
-        margin-bottom: 16px;
-    }
-
-    .detail-card ul {
-        color: #e2e8f0;
-        padding-left: 22px;
-    }
-
-    .detail-card li {
-        margin-bottom: 8px;
-    }
-
-    .detail-section {
-        margin-bottom: 24px;
     }
 
     .detail-label {
         color: #facc15;
         font-weight: 700;
-        font-size: 1.05rem;
         margin-bottom: 10px;
         display: inline-block;
     }
@@ -107,9 +81,6 @@
         align-items: center;
         justify-content: center;
         color: #94a3b8;
-        font-size: 1rem;
-        text-align: center;
-        padding: 20px;
     }
 
     .back-link {
@@ -118,94 +89,106 @@
         color: #facc15;
         text-decoration: none;
         font-weight: 600;
-        font-size: 1.05rem;
-    }
-
-    .back-link:hover {
-        text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-        .detail-wrapper {
-            padding: 20px;
-        }
-
-        .detail-card {
-            padding: 25px 20px;
-        }
-
-        .detail-card h1 {
-            font-size: 2rem;
-        }
-
-        .recipe-image,
-        .empty-image-box {
-            width: 100%;
-            height: auto;
-            min-height: 240px;
-        }
     }
 </style>
 
 <div class="detail-wrapper">
     <div class="detail-card">
-        <h1>{{ recipe.title }}</h1>
+
+        <!-- TYTUŁ -->
+        <h1>{% if recipe %}
+            {{ recipe.title }}
+            {% else %}
+            {{ post.title }}
+            {% endif %}</h1>
 
         <div class="recipe-top">
-            {% if recipe.image %}
-                <img src="{{ recipe.image.url }}" alt="{{ recipe.title }}" class="recipe-image">
+
+            <!-- OBRAZ -->
+            {% if recipe and recipe.image %}
+            <img src="{{ recipe.image.url }}" class="recipe-image">
+            {% elif post and post.image %}
+            <img src="{{ post.image.url }}" class="recipe-image">
             {% else %}
-                <div class="empty-image-box">
-                    Brak zdjęcia dla tego przepisu
-                </div>
+            <div class="empty-image-box">
+                Brak zdjęcia
+            </div>
             {% endif %}
 
             <div class="recipe-info">
+
+                <!-- META -->
                 <div class="recipe-meta">
-                    {% if recipe.calories %}
-                        <span><i class="fa-solid fa-fire"></i> {{ recipe.calories }} kcal</span>
+
+                    {% if recipe.calories or post.calories %}
+                    <span><i class="fa-solid fa-fire"></i>
+                        {{ recipe.calories|default:post.calories }} kcal
+                    </span>
                     {% endif %}
 
-                    {% if recipe.servings %}
-                        <span><i class="fa-solid fa-utensils"></i> {{ recipe.servings }} porcji</span>
+                    {% if recipe.servings or post.servings %}
+                    <span><i class="fa-solid fa-utensils"></i>
+                        {{ recipe.servings|default:post.servings }} porcji
+                    </span>
                     {% endif %}
 
-                    {% if recipe.prep_time %}
-                        <span><i class="fa-regular fa-clock"></i> {{ recipe.prep_time }} min</span>
+                    {% if recipe.prep_time or post.time %}
+                    <span><i class="fa-regular fa-clock"></i>
+                        {{ recipe.prep_time|default:post.time }}
+                    </span>
                     {% endif %}
+
                 </div>
 
-                {% if recipe.description %}
-                    <div class="detail-section">
-                        <span class="detail-label">Opis:</span>
-                        <p>{{ recipe.description }}</p>
-                    </div>
-                {% endif %}
+                <!-- OPIS -->
+                <div>
+                    <span class="detail-label">Opis:</span>
+                    <p>
+                        {% if recipe %}
+                        {{ recipe.description }}
+                        {% else %}
+                        {{ post.body }}
+                        {% endif %}
+                    </p>
+                </div>
 
-                {% if recipe.category %}
-                    <div class="detail-section">
-                        <span class="detail-label">Kategoria:</span>
-                        <p>{{ recipe.category }}</p>
-                    </div>
-                {% endif %}
             </div>
         </div>
 
-        <div class="detail-section">
+        <!-- SKŁADNIKI -->
+        <div>
             <span class="detail-label">Składniki:</span>
             <ul>
+                {% if recipe %}
                 {% for item in recipe.ingredients.splitlines %}
-                    <li>{{ item }}</li>
+                <li>{{ item }}</li>
                 {% endfor %}
+                {% elif post %}
+                {% for item in post.ingredients.splitlines %}
+                <li>{{ item }}</li>
+                {% endfor %}
+                {% endif %}
             </ul>
         </div>
 
-        <div class="detail-section">
+        <!-- INSTRUKCJE -->
+        <div>
             <span class="detail-label">Instrukcje:</span>
-            <p>{{ recipe.instructions|linebreaksbr }}</p>
+            <p>
+                {% if recipe %}
+                {{ recipe.instructions|linebreaksbr }}
+                {% else %}
+                {{ post.body|linebreaksbr }}
+                {% endif %}
+            </p>
         </div>
 
-        <a href="{% url 'recipes' %}" class="back-link">← Wróć do wyszukiwarki</a>
+        <!-- BACK -->
+        <a href="{% url 'recipes' %}" class="back-link">
+            ← Wróć do wyszukiwarki
+        </a>
+
     </div>
 </div>
+
 {% endblock %}

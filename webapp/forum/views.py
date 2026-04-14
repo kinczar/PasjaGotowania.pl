@@ -191,6 +191,13 @@ def toggle_save(request, post_id):
         post.saved_by.add(request.user)
         saved = True
 
-    return JsonResponse({
-        "saved": saved
-    })
+    return JsonResponse({"saved": saved})
+
+@login_required
+def remove_saved_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    if request.user in post.saved_by.all():
+        post.saved_by.remove(request.user)
+
+    return redirect('recipes')

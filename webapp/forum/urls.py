@@ -12,6 +12,7 @@ urlpatterns = [
     path('comment/<int:comment_id>/like/', views.like_comment, name='like_comment'), #like komentarza
     path('comment/delete/<int:comment_id>/', views.delete_comment, name='delete_comment'), #usuwanie komentarza
     path('save/<int:post_id>/', views.toggle_save, name='toggle_save'), #zapisywanie posta
+    path('remove-saved/<int:post_id>/', views.remove_saved_post, name='remove_saved_post'),
     
 ]
  
