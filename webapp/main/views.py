@@ -159,19 +159,17 @@ def normalize_text(text):
 
 def recipes(request):
     query = request.GET.get("q", "").strip()
-    category = request.GET.get("category", "").strip()
     results = []
     favorite_ids = []
     favorite_recipes = []
 
-    if query or category:
+    if query:
         results = Recipe.objects.all()
 
         if query:
             normal_results = results.filter(
                 Q(title__icontains=query) |
                 Q(description__icontains=query) |
-                Q(category__icontains=query) |
                 Q(ingredients__icontains=query)
             ).distinct()
 
@@ -195,9 +193,6 @@ def recipes(request):
                 matched_ids = [title_map[title] for title in close_titles]
                 results = Recipe.objects.filter(id__in=matched_ids)
 
-        if category:
-            results = results.filter(category__icontains=category)
-
     if request.user.is_authenticated:
         favorite_ids = request.user.favorite_recipes.values_list('id', flat=True)
         favorite_recipes = request.user.favorite_recipes.select_related()
@@ -211,7 +206,6 @@ def recipes(request):
     return render(request, "main/recipes.html", {
         "query": query,
         "results": results,
-        "category": category,
         "favorite_ids": favorite_ids,
         "favorite_recipes": favorite_recipes,
         "saved_posts": saved_posts,
@@ -227,6 +221,10 @@ def recipe_detail(request, id):
 @login_required
 def toggle_favorite(request, id):
     recipe = get_object_or_404(Recipe, id=id)
+
+    if recipe.forum_post_id and request.user.saved_posts.filter(id=recipe.forum_post_id).exists():
+        messages.error(request, 'Ten przepis masz już zapisany w sekcji „Zapisane posty z forum”.')
+        return redirect('recipes')
 
     if request.user in recipe.favorites.all():
         recipe.favorites.remove(request.user)

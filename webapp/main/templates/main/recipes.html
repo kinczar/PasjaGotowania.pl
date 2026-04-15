@@ -162,28 +162,6 @@
         gap: 12px;
     }
 
-    .category-btn {
-        background: rgba(255, 255, 255, 0.08);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.12);
-        padding: 10px 18px;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: 0.2s ease;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .category-btn i {
-        margin-right: 8px;
-        font-size: 1rem;
-    }
-
-    .category-btn:hover {
-        background: rgba(255, 255, 255, 0.15);
-        transform: translateY(-2px);
-    }
-
     .results-box {
         margin-top: 35px;
         text-align: left;
@@ -368,25 +346,7 @@
                     <button class="btn-custom" type="submit">Szukaj</button>
                 </form>
 
-                <div class="categories">
-                    <a href="?category=Pizza" class="category-btn">
-                        <i class="fas fa-pizza-slice"></i> Pizza
-                    </a>
-
-                    <a href="?category=Makarony" class="category-btn">
-                        <i class="fas fa-utensils"></i> Makarony
-                    </a>
-
-                    <a href="?category=Sałatki" class="category-btn">
-                        <i class="fas fa-leaf"></i> Sałatki
-                    </a>
-
-                    <a href="?category=Desery" class="category-btn">
-                        <i class="fas fa-ice-cream"></i> Desery
-                    </a>
-                </div>
-
-                {% if query or category %}
+                {% if query %}
                 <div class="results-box">
                     <h3>Wyniki wyszukiwania</h3>
 
@@ -401,10 +361,6 @@
 
                         {% if recipe.description %}
                         <p>{{ recipe.description }}</p>
-                        {% endif %}
-
-                        {% if recipe.category %}
-                        <span>Kategoria: {{ recipe.category }}</span>
                         {% endif %}
 
                         {% if user.is_authenticated %}
@@ -426,7 +382,7 @@
                     {% else %}
                     <div class="no-results">
                         <i class="fa-solid fa-magnifying-glass"></i>
-                        <p>Brak wyników dla "<strong>{{ query|default:category }}</strong>"</p>
+                        <p>Brak wyników dla "<strong>{{ query }}</strong>"</p>
                     </div>
                     {% endif %}
                 </div>
@@ -448,14 +404,6 @@
                         style="color:white; text-decoration:none; font-weight:bold;">
                         {{ recipe.title }}
                     </a>
-
-                    <!-- KATEGORIA (zamiast autora) -->
-                    {% if recipe.category %}
-                    <span style="font-size:0.85rem; color:#cbd5e1;">
-                        kategoria:
-                        <span style="color:#facc15;">{{ recipe.category }}</span>
-                    </span>
-                    {% endif %}
 
                     <!-- PRZYCISK -->
                     <form method="POST" action="{% url 'toggle_favorite' recipe.id %}">

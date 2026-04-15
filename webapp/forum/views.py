@@ -81,7 +81,6 @@ def add_post(request):
                         "description": post.body,
                         "ingredients": post.ingredients if post.ingredients else "",
                         "instructions": post.body,
-                        "category": "Przepis z forum",
                         "prep_time": prep_time_value,
                         "calories": post.calories,
                         "servings": post.servings,
@@ -105,6 +104,7 @@ def delete_post(request, post_id):
     post = get_object_or_404(Post, id=post_id)
 
     if post.author == request.user:
+        Recipe.objects.filter(forum_post_id=post.id).delete()
         post.delete()
 
     return redirect('forum')
@@ -183,6 +183,14 @@ def delete_comment(request, comment_id):
 @login_required
 def toggle_save(request, post_id):
     post = Post.objects.get(id=post_id)
+
+    linked_recipe = Recipe.objects.filter(forum_post_id=post.id).first()
+
+    if linked_recipe and request.user in linked_recipe.favorites.all():
+        return JsonResponse({
+            "saved": False,
+            "message": "Ten przepis masz już zapisany w sekcji „Ulubione przepisy z wyszukiwarki”."
+        })
 
     if request.user in post.saved_by.all():
         post.saved_by.remove(request.user)

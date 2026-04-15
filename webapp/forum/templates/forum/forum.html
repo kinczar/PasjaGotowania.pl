@@ -310,6 +310,24 @@
 
 {% endfor %}
 
+<div id="forum-message" style="
+        display: none;
+        position: fixed;
+        top: 24px;
+        right: 24px;
+        z-index: 9999;
+        min-width: 320px;
+        max-width: 420px;
+        background: rgba(30, 41, 59, 0.95);
+        color: white;
+        padding: 18px 20px;
+        border-left: 6px solid #ef4444;
+        border-radius: 14px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        font-size: 1rem;
+    ">
+    </div>
+
 <script>
 
     // CSRF
@@ -409,6 +427,19 @@
             })
                 .then(res => res.json())
                 .then(data => {
+
+                    if (data.message) {
+                        const box = document.getElementById("forum-message");
+
+                        box.innerText = data.message;
+                        box.style.display = "block";
+
+                        setTimeout(() => {
+                            box.style.display = "none";
+                        }, 3000);
+
+                        return;
+                    }
 
                     text.innerText = data.saved ? "Zapisano" : "Zapisz";
 
