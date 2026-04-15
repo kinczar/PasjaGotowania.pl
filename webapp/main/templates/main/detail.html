@@ -5,7 +5,8 @@
 {{ recipe.title }}
 {% else %}
 {{ post.title }}
-{% endif %} - Pasja Gotowania{% endblock %}
+{% endif %} - Pasja Gotowania
+{% endblock %}
 
 {% block content %}
 <style>
@@ -33,9 +34,14 @@
         max-width: 1000px;
     }
 
+    /* 🔥 TYTUŁ - NOWY LOOK */
     .detail-card h1 {
         font-size: 2.8rem;
         margin-bottom: 24px;
+        font-weight: 800;
+        background: linear-gradient(135deg, #22c55e, #4ade80);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     .recipe-top {
@@ -66,10 +72,12 @@
     }
 
     .detail-label {
-        color: #facc15;
         font-weight: 700;
         margin-bottom: 10px;
         display: inline-block;
+        background: linear-gradient(135deg, #22c55e, #4ade80);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     .empty-image-box {
@@ -86,114 +94,58 @@
     .back-link {
         display: inline-block;
         margin-top: 20px;
-        color: #facc15;
+        color: #22c55e;
         text-decoration: none;
         font-weight: 600;
-    }
-
-    .favorite-btn {
-        margin-top: 10px;
-        padding: 12px 22px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        background: rgba(255, 255, 255, 0.08);
-        color: white;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: 0.2s ease;
-    }
-
-    .favorite-btn:hover {
-        background: rgba(255, 255, 255, 0.14);
-    }
-
-    .add-btn i,
-    .remove-btn i {
-        margin-right: 8px;
     }
 </style>
 
 <div class="detail-wrapper">
     <div class="detail-card">
 
-        <!-- TYTUŁ -->
-        <h1>{% if recipe %}
-            {{ recipe.title }}
+        <h1>
+            {% if recipe %}
+                {{ recipe.title }}
             {% else %}
-            {{ post.title }}
-            {% endif %}</h1>
+                {{ post.title }}
+            {% endif %}
+        </h1>
 
         <div class="recipe-top">
 
-            <!-- OBRAZ -->
             {% if recipe and recipe.image %}
-            <img src="{{ recipe.image.url }}" class="recipe-image">
+                <img src="{{ recipe.image.url }}" class="recipe-image">
             {% elif post and post.image %}
-            <img src="{{ post.image.url }}" class="recipe-image">
+                <img src="{{ post.image.url }}" class="recipe-image">
             {% else %}
-            <div class="empty-image-box">
-                Brak zdjęcia
-            </div>
+                <div class="empty-image-box">
+                    Brak zdjęcia
+                </div>
             {% endif %}
 
             <div class="recipe-info">
 
-                <!-- META -->
                 <div class="recipe-meta">
-
                     {% if recipe %}
-
-                    {% if recipe.calories %}
-                    <span><i class="fa-solid fa-fire"></i>
-                        {{ recipe.calories }} kcal
-                    </span>
+                        {% if recipe.calories %}
+                            <span>{{ recipe.calories }} kcal</span>
+                        {% endif %}
+                        {% if recipe.servings %}
+                            <span>{{ recipe.servings }} porcji</span>
+                        {% endif %}
+                        {% if recipe.prep_time %}
+                            <span>{{ recipe.prep_time }} min</span>
+                        {% endif %}
                     {% endif %}
-
-                    {% if recipe.servings %}
-                    <span><i class="fa-solid fa-utensils"></i>
-                        {{ recipe.servings }} porcji
-                    </span>
-                    {% endif %}
-
-                    {% if recipe.prep_time %}
-                    <span><i class="fa-regular fa-clock"></i>
-                        {{ recipe.prep_time }} min
-                    </span>
-                    {% endif %}
-
-                    {% elif post %}
-
-                    {% if post.calories %}
-                    <span><i class="fa-solid fa-fire"></i>
-                        {{ post.calories }} kcal
-                    </span>
-                    {% endif %}
-
-                    {% if post.servings %}
-                    <span><i class="fa-solid fa-utensils"></i>
-                        {{ post.servings }} porcji
-                    </span>
-                    {% endif %}
-
-                    {% if post.time %}
-                    <span><i class="fa-regular fa-clock"></i>
-                        {{ post.time }}
-                    </span>
-                    {% endif %}
-
-                    {% endif %}
-
                 </div>
 
-                <!-- OPIS -->
                 <div>
                     <span class="detail-label">Opis:</span>
                     <p>
                         {% if recipe %}
-                        {{ recipe.description }}
+                            {{ recipe.description }}
                         {% else %}
-                        {{ post.body }}
+                            {{ post.body }}
                         {% endif %}
                     </p>
                 </div>
@@ -201,38 +153,21 @@
             </div>
         </div>
 
-        <!-- SKŁADNIKI -->
         <div>
             <span class="detail-label">Składniki:</span>
             <ul>
                 {% if recipe %}
-                {% for item in recipe.ingredients.splitlines %}
-                <li>{{ item }}</li>
-                {% endfor %}
+                    {% for item in recipe.ingredients.splitlines %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
                 {% elif post %}
-                {% for item in post.ingredients.splitlines %}
-                <li>{{ item }}</li>
-                {% endfor %}
+                    {% for item in post.ingredients.splitlines %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
                 {% endif %}
             </ul>
         </div>
 
-        {% if user.is_authenticated and recipe %}
-        <form method="POST" action="{% url 'toggle_favorite' recipe.id %}">
-            {% csrf_token %}
-            {% if user in recipe.favorites.all %}
-            <button type="submit" class="favorite-btn remove-btn">
-                <i class="fa-solid fa-heart-crack"></i> Usuń z ulubionych
-            </button>
-            {% else %}
-            <button type="submit" class="favorite-btn add-btn">
-                <i class="fa-solid fa-heart"></i> Dodaj do ulubionych
-            </button>
-            {% endif %}
-        </form>
-        {% endif %}
-
-        <!-- BACK -->
         <a href="{% url 'recipes' %}" class="back-link">
             ← Wróć do wyszukiwarki
         </a>

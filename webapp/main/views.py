@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import Q
 from django.contrib.auth.models import User
@@ -8,10 +8,10 @@ from django.contrib.auth.decorators import login_required
 from difflib import get_close_matches
 import unicodedata
 import re
-from forum.models import Post
+import json
 
-from .models import Recipe
 from forum.models import Post
+from .models import Recipe
 
 
 def index(request):
@@ -166,32 +166,31 @@ def recipes(request):
     if query:
         results = Recipe.objects.all()
 
-        if query:
-            normal_results = results.filter(
-                Q(title__icontains=query) |
-                Q(description__icontains=query) |
-                Q(ingredients__icontains=query)
-            ).distinct()
+        normal_results = results.filter(
+            Q(title__icontains=query) |
+            Q(description__icontains=query) |
+            Q(ingredients__icontains=query)
+        ).distinct()
 
-            if normal_results.exists():
-                results = normal_results
-            else:
-                all_recipes = Recipe.objects.all()
+        if normal_results.exists():
+            results = normal_results
+        else:
+            all_recipes = Recipe.objects.all()
 
-                title_map = {}
-                for recipe in all_recipes:
-                    normalized_title = normalize_text(recipe.title)
-                    title_map[normalized_title] = recipe.id
+            title_map = {}
+            for recipe in all_recipes:
+                normalized_title = normalize_text(recipe.title)
+                title_map[normalized_title] = recipe.id
 
-                close_titles = get_close_matches(
-                    normalize_text(query),
-                    title_map.keys(),
-                    n=10,
-                    cutoff=0.6
-                )
+            close_titles = get_close_matches(
+                normalize_text(query),
+                title_map.keys(),
+                n=10,
+                cutoff=0.6
+            )
 
-                matched_ids = [title_map[title] for title in close_titles]
-                results = Recipe.objects.filter(id__in=matched_ids)
+            matched_ids = [title_map[title] for title in close_titles]
+            results = Recipe.objects.filter(id__in=matched_ids)
 
     if request.user.is_authenticated:
         favorite_ids = request.user.favorite_recipes.values_list('id', flat=True)
@@ -235,55 +234,59 @@ def toggle_favorite(request, id):
 
 
 def health(request):
-    bmi = None
-    category = None
-    calories = None
+    return render(request, "main/health.html")
 
+
+# 🔥 NOWE API
+def calculate_bmi(request):
     if request.method == "POST":
-        height = request.POST.get("height")
-        weight = request.POST.get("weight")
+        data = json.loads(request.body)
 
-        if height and weight:
-            try:
-                height = float(height)
-                weight = float(weight)
+        height = float(data.get("height", 0))
+        weight = float(data.get("weight", 0))
 
-                height_m = height / 100
-                bmi = round(weight / (height_m ** 2), 2)
+        if height == 0:
+            return JsonResponse({"error": "Invalid data"})
 
-                if bmi < 18.5:
-                    category = "Niedowaga"
-                elif bmi < 25:
-                    category = "Prawidłowa"
-                elif bmi < 30:
-                    category = "Nadwaga"
-                else:
-                    category = "Otyłość"
-            except:
-                pass
+        height_m = height / 100
+        bmi = round(weight / (height_m ** 2), 2)
 
-        cal_weight = request.POST.get("cal_weight")
-        goal = request.POST.get("goal")
+        if bmi < 18.5:
+            category = "Niedowaga"
+        elif bmi < 25:
+            category = "Prawidłowa"
+        elif bmi < 30:
+            category = "Nadwaga"
+        else:
+            category = "Otyłość"
 
-        if cal_weight and goal:
-            try:
-                cal_weight = float(cal_weight)
-                base = cal_weight * 24
+        return JsonResponse({
+            "bmi": bmi,
+            "category": category
+        })
 
-                if goal == "lose":
-                    calories = int(base - 300)
-                elif goal == "maintain":
-                    calories = int(base)
-                elif goal == "gain":
-                    calories = int(base + 300)
-            except:
-                pass
 
-    return render(request, "main/health.html", {
-        "bmi": bmi,
-        "category": category,
-        "calories": calories
-    })
+def calculate_calories(request):
+    if request.method == "POST":
+        data = json.loads(request.body)
+
+        weight = float(data.get("weight", 0))
+        goal = data.get("goal")
+
+        base = weight * 24
+
+        if goal == "lose":
+            calories = int(base - 300)
+        elif goal == "maintain":
+            calories = int(base)
+        elif goal == "gain":
+            calories = int(base + 300)
+        else:
+            calories = 0
+
+        return JsonResponse({
+            "calories": calories
+        })
 
 
 @login_required
@@ -300,6 +303,7 @@ def user_profile(request, user_id):
     return render(request, "main/user_profile.html", {
         "profile_user": user
     })
+
 
 def post_detail(request, id):
     post = get_object_or_404(Post, id=id)
