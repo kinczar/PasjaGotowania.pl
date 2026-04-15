@@ -1,5 +1,34 @@
-# Django blueprint app
-PyCharm will prepare the virtual environment for project automatically. For non-PyCharm users (for example VSCode) look an instructions below how to do this manually
+# PasjaGotowania
+Pasja Gotowania is a web application that allows users to discover, share, and save cooking recipes.
+The platform combines a recipe search engine with a forum where users can post their own recipes, interact with others, and build a personal collection of favorite dishes.
+
+### Main features
+- Search recipes by name or ingredients
+- Create and share your own recipes via forum posts
+- Comment and like posts
+- Save forum posts
+- User authentication (register/login/logout)
+- Basic health tools (BMI & calorie calculator)
+
+### Technologies
+
+Python 3.13.5 – backend development
+Django 5.1.6 – web framework
+HTML / CSS / JavaScript – frontend
+PostgreSQL (Aiven) – cloud database
+Cloudinary – image storage and management
+Bootstrap / custom CSS – UI styling
+
+### Dependencies
+
+The project uses the following main dependencies:
+
+- **Django (~5.1.6)** – main web framework used to build the application  
+- **Pillow** – image processing library required for handling uploaded images  
+- **mysqlclient** – database connector for MySQL  
+- **python-dotenv** – loading environment variables from `.env` file  
+- **cloudinary** – cloud-based image storage service  
+- **django-cloudinary-storage** – integration of Cloudinary with Django  
 
 ## How to run local server
 Get to the `webapp` directory: `cd webapp` and run `python3 manage.py runserver` from webapp folder
@@ -32,7 +61,12 @@ API_KEY=<api_key>
 API_SECRET=<api_secret>
 
 ```
+
+### Credentials
+
+All database credentials are private and available only to the project authors.  
+They are not included in this repository for security reasons.
+
 ### How Quit the server :
 Quit the server with CTRL-C in command line
 
-## Happy coding!
