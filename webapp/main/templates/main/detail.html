@@ -120,22 +120,22 @@
                 <!-- META -->
                 <div class="recipe-meta">
 
-                    {% if recipe.calories or post.calories %}
-                    <span><i class="fa-solid fa-fire"></i>
-                        {{ recipe.calories|default:post.calories }} kcal
-                    </span>
+                    {% if recipe.calories %}
+                        <span><i class="fa-solid fa-fire"></i>
+                            {{ recipe.calories }} kcal
+                        </span>
                     {% endif %}
 
-                    {% if recipe.servings or post.servings %}
-                    <span><i class="fa-solid fa-utensils"></i>
-                        {{ recipe.servings|default:post.servings }} porcji
-                    </span>
+                    {% if recipe.servings %}
+                        <span><i class="fa-solid fa-utensils"></i>
+                            {{ recipe.servings }} porcji
+                        </span>
                     {% endif %}
 
-                    {% if recipe.prep_time or post.time %}
-                    <span><i class="fa-regular fa-clock"></i>
-                        {{ recipe.prep_time|default:post.time }}
-                    </span>
+                    {% if recipe.prep_time %}
+                        <span><i class="fa-regular fa-clock"></i>
+                            {{ recipe.prep_time }}
+                        </span>
                     {% endif %}
 
                 </div>

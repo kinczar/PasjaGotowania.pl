@@ -8,7 +8,6 @@ class Recipe(models.Model):
     description = models.TextField(blank=True)
     ingredients = models.TextField()
     instructions = models.TextField()
-    category = models.CharField(max_length=100, blank=True)
     prep_time = models.PositiveIntegerField(null=True, blank=True)
     calories = models.PositiveIntegerField(null=True, blank=True)
     servings = models.PositiveIntegerField(null=True, blank=True)
