@@ -231,7 +231,7 @@ def toggle_favorite(request, id):
     else:
         recipe.favorites.add(request.user)
 
-    return redirect('recipes')
+    return redirect(request.META.get('HTTP_REFERER', 'recipes'))
 
 
 def health(request):

@@ -90,6 +90,28 @@
         text-decoration: none;
         font-weight: 600;
     }
+
+    .favorite-btn {
+        margin-top: 10px;
+        padding: 12px 22px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.2s ease;
+    }
+
+    .favorite-btn:hover {
+        background: rgba(255, 255, 255, 0.14);
+    }
+
+    .add-btn i,
+    .remove-btn i {
+        margin-right: 8px;
+    }
 </style>
 
 <div class="detail-wrapper">
@@ -194,6 +216,21 @@
                 {% endif %}
             </ul>
         </div>
+
+        {% if user.is_authenticated and recipe %}
+        <form method="POST" action="{% url 'toggle_favorite' recipe.id %}">
+            {% csrf_token %}
+            {% if user in recipe.favorites.all %}
+            <button type="submit" class="favorite-btn remove-btn">
+                <i class="fa-solid fa-heart-crack"></i> Usuń z ulubionych
+            </button>
+            {% else %}
+            <button type="submit" class="favorite-btn add-btn">
+                <i class="fa-solid fa-heart"></i> Dodaj do ulubionych
+            </button>
+            {% endif %}
+        </form>
+        {% endif %}
 
         <!-- BACK -->
         <a href="{% url 'recipes' %}" class="back-link">
