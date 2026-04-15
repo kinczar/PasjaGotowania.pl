@@ -30,8 +30,46 @@
         margin: 0 auto;
     }
 
+    /* 🔥 TYTUŁ NA ZIELONO */
     .detail-card h1 {
+<<<<<<< Updated upstream
         font-size: 2.5rem;
+=======
+        font-size: 2.8rem;
+        margin-bottom: 24px;
+        font-weight: 800;
+
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        color: #22c55e;
+    }
+
+    .recipe-top {
+        display: flex;
+        gap: 30px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+    }
+
+    .recipe-image {
+        width: 320px;
+        height: 320px;
+        object-fit: cover;
+        border-radius: 14px;
+    }
+
+    .recipe-info {
+        flex: 1;
+        min-width: 280px;
+    }
+
+    .recipe-meta {
+        display: flex;
+        gap: 18px;
+        flex-wrap: wrap;
+>>>>>>> Stashed changes
         margin-bottom: 20px;
     }
 
@@ -41,21 +79,50 @@
         margin-bottom: 16px;
     }
 
+    /* 🔥 LABELKI (Opis, Składniki) */
     .detail-label {
+<<<<<<< Updated upstream
         color: #facc15;
         font-weight: 600;
+=======
+        font-weight: 700;
+        margin-bottom: 10px;
+        display: inline-block;
+
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        color: #22c55e;
     }
 
+    .empty-image-box {
+        width: 320px;
+        height: 320px;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.06);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+>>>>>>> Stashed changes
+    }
+
+    /* 🔥 LINK TEŻ PASUJE */
     .back-link {
         display: inline-block;
         margin-top: 20px;
-        color: #facc15;
+        color: #22c55e;
         text-decoration: none;
         font-weight: 600;
     }
 
     .back-link:hover {
+<<<<<<< Updated upstream
         text-decoration: underline;
+=======
+        color: #16a34a;
+>>>>>>> Stashed changes
     }
 </style>
 
@@ -63,7 +130,90 @@
     <div class="detail-card">
         <h1>{{ recipe.title }}</h1>
 
+<<<<<<< Updated upstream
         <p><span class="detail-label">Opis:</span> {{ recipe.description }}</p>
+=======
+        <h1>{% if recipe %}
+            {{ recipe.title }}
+            {% else %}
+            {{ post.title }}
+            {% endif %}</h1>
+
+        <div class="recipe-top">
+
+            {% if recipe and recipe.image %}
+            <img src="{{ recipe.image.url }}" class="recipe-image">
+            {% elif post and post.image %}
+            <img src="{{ post.image.url }}" class="recipe-image">
+            {% else %}
+            <div class="empty-image-box">
+                Brak zdjęcia
+            </div>
+            {% endif %}
+
+            <div class="recipe-info">
+
+                <div class="recipe-meta">
+
+                    {% if recipe %}
+
+                    {% if recipe.calories %}
+                    <span><i class="fa-solid fa-fire"></i>
+                        {{ recipe.calories }} kcal
+                    </span>
+                    {% endif %}
+
+                    {% if recipe.servings %}
+                    <span><i class="fa-solid fa-utensils"></i>
+                        {{ recipe.servings }} porcji
+                    </span>
+                    {% endif %}
+
+                    {% if recipe.prep_time %}
+                    <span><i class="fa-regular fa-clock"></i>
+                        {{ recipe.prep_time }} min
+                    </span>
+                    {% endif %}
+
+                    {% elif post %}
+
+                    {% if post.calories %}
+                    <span><i class="fa-solid fa-fire"></i>
+                        {{ post.calories }} kcal
+                    </span>
+                    {% endif %}
+
+                    {% if post.servings %}
+                    <span><i class="fa-solid fa-utensils"></i>
+                        {{ post.servings }} porcji
+                    </span>
+                    {% endif %}
+
+                    {% if post.time %}
+                    <span><i class="fa-regular fa-clock"></i>
+                        {{ post.time }}
+                    </span>
+                    {% endif %}
+
+                    {% endif %}
+
+                </div>
+
+                <div>
+                    <span class="detail-label">Opis:</span>
+                    <p>
+                        {% if recipe %}
+                        {{ recipe.description }}
+                        {% else %}
+                        {{ post.body }}
+                        {% endif %}
+                    </p>
+                </div>
+
+            </div>
+        </div>
+
+>>>>>>> Stashed changes
         <div>
             <p class="detail-label">Składniki:</p>
             <ul>
@@ -76,7 +226,14 @@
         <p><span class="detail-label">Kategoria:</span> {{ recipe.category }}</p>
         <p><span class="detail-label">Czas przygotowania:</span> {{ recipe.prep_time }} min</p>
 
+<<<<<<< Updated upstream
         <a href="{% url 'recipes' %}" class="back-link">← Wróć do wyszukiwarki</a>
+=======
+        <a href="{% url 'recipes' %}" class="back-link">
+            ← Wróć do wyszukiwarki
+        </a>
+
+>>>>>>> Stashed changes
     </div>
 </div>
 {% endblock %}

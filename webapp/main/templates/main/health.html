@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -7,12 +8,56 @@
     <link rel="stylesheet" href="{% static 'main/css/health.css' %}">
 </head>
 <body>
+=======
+{% extends 'main/layout/layout.html' %}
+{% load static %}
+
+{% block title %}Zdrowie | PasjaGotowania{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'main/css/health.css' %}?v=2">
+
+<style>
+.page-wrapper { max-width: 1100px; margin: 0 auto; }
+
+.hero {
+    background: linear-gradient(135deg, #22c55e, #06b6d4);
+    padding: 40px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.bmi-section {
+    margin-top: 40px;
+    padding: 30px;
+    background: rgba(30,41,59,0.8);
+    border-radius: 12px;
+}
+
+.btn-bmi {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+
+.form-control {
+    max-width: 500px;
+    margin: 0 auto;
+}
+</style>
+
+<div class="page-wrapper">
+>>>>>>> Stashed changes
 
 <section class="hero">
     <h1>Zdrowie w jedzeniu 🥗</h1>
     <p>Sprawdź składniki i ich wpływ na organizm</p>
 </section>
 
+<<<<<<< Updated upstream
 <section class="categories">
     <h2>Kategorie składników</h2>
 
@@ -67,3 +112,123 @@
 
 </body>
 </html>
+=======
+<!-- BMI -->
+<section class="bmi-section text-center">
+    <h2>Kalkulator BMI</h2>
+
+    <form id="bmi-form">
+        {% csrf_token %}
+        <input id="height" type="number" placeholder="Wzrost (cm)" class="form-control mb-2">
+        <input id="weight" type="number" placeholder="Waga (kg)" class="form-control mb-3">
+
+        <button class="btn btn-bmi w-100">Oblicz BMI</button>
+    </form>
+
+    <div id="bmi-result" class="mt-3"></div>
+</section>
+
+<!-- KALORIE -->
+<section class="bmi-section text-center">
+    <h2>Kalkulator kalorii</h2>
+
+    <form id="cal-form">
+        {% csrf_token %}
+
+        <input id="cal_weight" type="number" placeholder="Waga (kg)" class="form-control mb-2">
+
+        <select id="goal" class="form-control mb-3">
+            <option value="">Wybierz cel</option>
+            <option value="lose">Zrzucenie wagi</option>
+            <option value="maintain">Utrzymanie wagi</option>
+            <option value="gain">Przybranie na wadze</option>
+        </select>
+
+        <button class="btn btn-bmi w-100">Oblicz kalorie</button>
+    </form>
+
+    <div id="cal-result" class="mt-3"></div>
+</section>
+
+</div>
+
+<script>
+const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+// BMI
+document.getElementById("bmi-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    fetch("/calculate-bmi/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf
+        },
+        body: JSON.stringify({
+            height: document.getElementById("height").value,
+            weight: document.getElementById("weight").value
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+
+        let color = "#22c55e";
+
+        if (data.category === "Niedowaga") {
+            color = "#f59e0b";
+        } else if (data.category === "Prawidłowa") {
+            color = "#22c55e";
+        } else if (data.category === "Nadwaga") {
+            color = "#f59e0b";
+        } else if (data.category === "Otyłość") {
+            color = "#ef4444";
+        }
+
+        document.getElementById("bmi-result").innerHTML =
+            `<p>Twoje BMI:
+                <strong style="
+                    color:${color};
+                    font-size:1.3rem;
+                    text-shadow:0 0 10px ${color};
+                ">
+                    ${data.bmi}
+                </strong>
+                (${data.category})
+            </p>`;
+    });
+});
+
+// KALORIE
+document.getElementById("cal-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    fetch("/calculate-calories/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf
+        },
+        body: JSON.stringify({
+            weight: document.getElementById("cal_weight").value,
+            goal: document.getElementById("goal").value
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+        document.getElementById("cal-result").innerHTML =
+            `<p>Zapotrzebowanie:
+                <strong style="
+                    color:#22c55e;
+                    font-size:1.3rem;
+                    text-shadow:0 0 10px #22c55e;
+                ">
+                    ${data.calories} kcal
+                </strong>
+            </p>`;
+    });
+});
+</script>
+
+{% endblock %}
+>>>>>>> Stashed changes

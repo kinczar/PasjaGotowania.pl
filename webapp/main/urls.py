@@ -1,5 +1,3 @@
-# Plik do zarządzania ścieżkami w aplikacji. Zawiera listę ścieżek powiązanych z widokami.
-
 from django.urls import path
 from . import views
 from django.conf import settings
@@ -18,6 +16,18 @@ urlpatterns = [
 
     # 👇 TO DODAŁEŚ (twoja nowa podstrona)
     path('health/', views.health, name='health'),
+<<<<<<< Updated upstream
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+=======
+    path("post/<int:id>/", views.post_detail, name="detail"),
+
+
+    path('calculate-bmi/', views.calculate_bmi),
+    path('calculate-calories/', views.calculate_calories),
+]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+>>>>>>> Stashed changes
