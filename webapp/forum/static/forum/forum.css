@@ -11,7 +11,7 @@
     line-height: 60px;
     border-radius: 50%;
     text-decoration: none;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     z-index: 1000;
 }
 
@@ -43,7 +43,7 @@
     padding: 25px 18px;
 
     background: linear-gradient(180deg, #0f172a, #020617);
-    border-right: 1px solid rgba(255,255,255,0.05);
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 /* logo */
@@ -74,7 +74,7 @@
 
 /* hover */
 .sidebar .nav-link:hover {
-    background: rgba(255,255,255,0.08);
+    background: rgba(255, 255, 255, 0.08);
     color: white !important;
     transform: translateX(4px);
 }
@@ -118,6 +118,7 @@
 .sidebar .nav-item {
     margin-bottom: 12px !important;
 }
+
 .sidebar {
-    box-shadow: 4px 0 20px rgba(0,0,0,0.4);
+    box-shadow: 4px 0 20px rgba(0, 0, 0, 0.4);
 }
