@@ -120,22 +120,46 @@
                 <!-- META -->
                 <div class="recipe-meta">
 
+                    {% if recipe %}
+
                     {% if recipe.calories %}
-                        <span><i class="fa-solid fa-fire"></i>
-                            {{ recipe.calories }} kcal
-                        </span>
+                    <span><i class="fa-solid fa-fire"></i>
+                        {{ recipe.calories }} kcal
+                    </span>
                     {% endif %}
 
                     {% if recipe.servings %}
-                        <span><i class="fa-solid fa-utensils"></i>
-                            {{ recipe.servings }} porcji
-                        </span>
+                    <span><i class="fa-solid fa-utensils"></i>
+                        {{ recipe.servings }} porcji
+                    </span>
                     {% endif %}
 
                     {% if recipe.prep_time %}
-                        <span><i class="fa-regular fa-clock"></i>
-                            {{ recipe.prep_time }}
-                        </span>
+                    <span><i class="fa-regular fa-clock"></i>
+                        {{ recipe.prep_time }} min
+                    </span>
+                    {% endif %}
+
+                    {% elif post %}
+
+                    {% if post.calories %}
+                    <span><i class="fa-solid fa-fire"></i>
+                        {{ post.calories }} kcal
+                    </span>
+                    {% endif %}
+
+                    {% if post.servings %}
+                    <span><i class="fa-solid fa-utensils"></i>
+                        {{ post.servings }} porcji
+                    </span>
+                    {% endif %}
+
+                    {% if post.time %}
+                    <span><i class="fa-regular fa-clock"></i>
+                        {{ post.time }}
+                    </span>
+                    {% endif %}
+
                     {% endif %}
 
                 </div>
@@ -169,18 +193,6 @@
                 {% endfor %}
                 {% endif %}
             </ul>
-        </div>
-
-        <!-- INSTRUKCJE -->
-        <div>
-            <span class="detail-label">Instrukcje:</span>
-            <p>
-                {% if recipe %}
-                {{ recipe.instructions|linebreaksbr }}
-                {% else %}
-                {{ post.body|linebreaksbr }}
-                {% endif %}
-            </p>
         </div>
 
         <!-- BACK -->
