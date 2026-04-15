@@ -12,12 +12,12 @@ The platform combines a recipe search engine with a forum where users can post t
 
 ### Technologies
 
-Python 3.13.5 – backend development
-Django 5.1.6 – web framework
-HTML / CSS / JavaScript – frontend
-PostgreSQL (Aiven) – cloud database
-Cloudinary – image storage and management
-Bootstrap / custom CSS – UI styling
+- Python 3.13.5 – backend development
+- Django 5.1.6 – web framework
+- HTML / CSS / JavaScript – frontend
+- PostgreSQL (Aiven) – cloud database
+- Cloudinary – image storage and management
+- Bootstrap / custom CSS – UI styling
 
 ### Dependencies
 
