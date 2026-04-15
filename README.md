@@ -23,12 +23,13 @@ The platform combines a recipe search engine with a forum where users can post t
 
 The project uses the following main dependencies:
 
-- **Django (~5.1.6)** – main web framework used to build the application  
-- **Pillow** – image processing library required for handling uploaded images  
-- **mysqlclient** – database connector for MySQL  
-- **python-dotenv** – loading environment variables from `.env` file  
-- **cloudinary** – cloud-based image storage service  
-- **django-cloudinary-storage** – integration of Cloudinary with Django  
+- **Django (5.1.15)** – main web framework used to build the application  
+- **Pillow (12.1.1)** – image processing library required for handling uploaded images  
+- **mysqlclient (2.2.8)** – database connector for MySQL  
+- **python-dotenv (1.2.2)** – loading environment variables from `.env` file  
+- **cloudinary (1.44.1)** – cloud-based image storage service  
+- **django-cloudinary-storage (0.3.0)** – integration of Cloudinary with Django  
+- **cryptography (46.0.5)** – required for secure database connections (SSL/TLS)
 
 ## How to run local server
 Get to the `webapp` directory: `cd webapp` and run `python3 manage.py runserver` from webapp folder

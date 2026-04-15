@@ -1,6 +1,7 @@
-Django~=5.1.6
-Pillow
-mysqlclient
-python-dotenv
-django-cloudinary-storage
-cloudinary
+Django==5.1.15
+Pillow==12.1.1
+mysqlclient==2.2.8
+python-dotenv==1.2.2
+django-cloudinary-storage==0.3.0
+cloudinary==1.44.1
+cryptography==46.0.5
