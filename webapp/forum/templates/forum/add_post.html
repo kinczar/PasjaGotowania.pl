@@ -32,15 +32,14 @@
                         <div class="mb-3">
                             <label>Tytuł</label>
                             {{ form.title }}
+                            <small id="title-counter">0 / 120</small>
                         </div>
 
                         <!-- POLA PRZEPIS -->
                         <div id="recipe-fields" style="display:none;">
 
-                            <!-- META -->
                             <div id="recipe-meta">
 
-                                <!-- KALORIE -->
                                 <div class="mb-3">
                                     <label>
                                         <input type="checkbox" class="meta-toggle" data-target="calories-field">
@@ -52,7 +51,6 @@
                                     </div>
                                 </div>
 
-                                <!-- PORCJE -->
                                 <div class="mb-3">
                                     <label>
                                         <input type="checkbox" class="meta-toggle" data-target="servings-field">
@@ -64,7 +62,6 @@
                                     </div>
                                 </div>
 
-                                <!-- CZAS -->
                                 <div class="mb-3">
                                     <label>
                                         <input type="checkbox" class="meta-toggle" data-target="time-field">
@@ -87,7 +84,6 @@
 
                                 <div id="ingredients-container">
 
-                                    <!-- pierwszy składnik -->
                                     <div class="ingredient-row d-flex gap-2 mb-2 align-items-center">
 
                                         <button type="button" class="btn btn-sm btn-danger remove-ingredient">
@@ -95,7 +91,7 @@
                                         </button>
 
                                         <input type="text" name="ingredients_name[]" class="form-control"
-                                            placeholder="np. mąka">
+                                            placeholder="np. mąka" maxlength="120">
 
                                         <input type="number" name="ingredients_amount[]" class="form-control"
                                             placeholder="ilość">
@@ -123,6 +119,7 @@
                         <div class="mb-3">
                             <label>Opis</label>
                             {{ form.body }}
+                            <small id="body-counter">0 / 1200</small>
                         </div>
 
                         <!-- IMAGE -->
@@ -145,68 +142,90 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-        const select = document.querySelector("select[name='post_type']");
-        const recipeFields = document.getElementById("recipe-fields");
+    const select = document.querySelector("select[name='post_type']");
+    const recipeFields = document.getElementById("recipe-fields");
 
-        function updateForm() {
-            if (select.value.toLowerCase() === "recipe") {
-                recipeFields.style.display = "block";
-            } else {
-                recipeFields.style.display = "none";
-            }
+    function updateForm() {
+        if (select.value.toLowerCase() === "recipe") {
+            recipeFields.style.display = "block";
+        } else {
+            recipeFields.style.display = "none";
         }
+    }
 
-        select.addEventListener("change", updateForm);
-        updateForm();
+    select.addEventListener("change", updateForm);
+    updateForm();
 
-        // checkboxy (kalorie, porcje, czas)
-        const toggles = document.querySelectorAll(".meta-toggle");
+    // 🔥 LIMITY DLA DJANGO FORM
+    const titleInput = document.querySelector("input[name='title']");
+    const bodyTextarea = document.querySelector("textarea[name='body']");
 
-        toggles.forEach(toggle => {
-            toggle.addEventListener("change", function () {
-                const target = document.getElementById(this.dataset.target);
-                target.style.display = this.checked ? "block" : "none";
-            });
+    if (titleInput) titleInput.setAttribute("maxlength", "120");
+    if (bodyTextarea) bodyTextarea.setAttribute("maxlength", "1200");
+
+    // 🔥 LICZNIKI
+    const titleCounter = document.getElementById("title-counter");
+    const bodyCounter = document.getElementById("body-counter");
+
+    if (titleInput) {
+        titleInput.addEventListener("input", () => {
+            titleCounter.textContent = titleInput.value.length + " / 120";
         });
+    }
 
-        // dodawanie składników
-        const addBtn = document.getElementById("add-ingredient");
-        const container = document.getElementById("ingredients-container");
+    if (bodyTextarea) {
+        bodyTextarea.addEventListener("input", () => {
+            bodyCounter.textContent = bodyTextarea.value.length + " / 1200";
+        });
+    }
 
-        addBtn.addEventListener("click", function () {
+    // checkboxy
+    const toggles = document.querySelectorAll(".meta-toggle");
 
-            const newRow = document.createElement("div");
-            newRow.classList.add("ingredient-row", "d-flex", "gap-2", "mb-2", "align-items-center");
+    toggles.forEach(toggle => {
+        toggle.addEventListener("change", function () {
+            const target = document.getElementById(this.dataset.target);
+            target.style.display = this.checked ? "block" : "none";
+        });
+    });
 
-            newRow.innerHTML = `
-            <button type="button" class="btn btn-sm btn-danger remove-ingredient">✕</button>
+    // składniki
+    const addBtn = document.getElementById("add-ingredient");
+    const container = document.getElementById("ingredients-container");
 
-            <input type="text" name="ingredients_name[]" class="form-control" placeholder="np. cukier">
+    addBtn.addEventListener("click", function () {
 
-            <input type="number" name="ingredients_amount[]" class="form-control" placeholder="ilość">
+        const newRow = document.createElement("div");
+        newRow.classList.add("ingredient-row", "d-flex", "gap-2", "mb-2", "align-items-center");
 
-            <select name="ingredients_unit[]" class="form-select">
-                <option value="g">g</option>
-                <option value="kg">kg</option>
-                <option value="ml">ml</option>
-                <option value="l">l</option>
-                <option value="szt">szt</option>
-            </select>
+        newRow.innerHTML = `
+        <button type="button" class="btn btn-sm btn-danger remove-ingredient">✕</button>
+
+        <input type="text" name="ingredients_name[]" class="form-control" placeholder="np. cukier" maxlength="120">
+
+        <input type="number" name="ingredients_amount[]" class="form-control" placeholder="ilość">
+
+        <select name="ingredients_unit[]" class="form-select">
+            <option value="g">g</option>
+            <option value="kg">kg</option>
+            <option value="ml">ml</option>
+            <option value="l">l</option>
+            <option value="szt">szt</option>
+        </select>
         `;
 
-            container.appendChild(newRow);
-        });
-
-        // usuwanie składnika
-        document.addEventListener("click", function (e) {
-            if (e.target.classList.contains("remove-ingredient")) {
-                e.target.parentElement.remove();
-            }
-        });
-
+        container.appendChild(newRow);
     });
+
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("remove-ingredient")) {
+            e.target.parentElement.remove();
+        }
+    });
+
+});
 </script>
 
 {% endblock %}
