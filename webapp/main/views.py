@@ -65,9 +65,21 @@ def login_user(request):
         return redirect('home')
 
     if request.method == 'POST':
+        username = request.POST.get('username', '')
+        password = request.POST.get('password', '')
+
+        # 🔥 LIMITY
+        if len(username) > 150:
+            messages.error(request, "Za długa nazwa użytkownika")
+            return redirect('login_user')
+
+        if len(password) > 128:
+            messages.error(request, "Hasło za długie")
+            return redirect('login_user')
+
         user = authenticate(
-            username=request.POST['username'],
-            password=request.POST['password']
+            username=username,
+            password=password
         )
 
         if user is not None:
@@ -92,9 +104,22 @@ def register(request):
         return redirect('home')
 
     if request.method == 'POST':
-        username = request.POST.get('username')
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+        username = request.POST.get('username', '')
+        email = request.POST.get('email', '')
+        password = request.POST.get('password', '')
+
+        # 🔥 LIMITY
+        if len(username) > 150:
+            messages.error(request, "Nazwa użytkownika za długa")
+            return render(request, 'main/users/register.html')
+
+        if len(email) > 254:
+            messages.error(request, "Email za długi")
+            return render(request, 'main/users/register.html')
+
+        if len(password) > 128:
+            messages.error(request, "Hasło za długie")
+            return render(request, 'main/users/register.html')
 
         if not email:
             messages.error(request, "Email jest wymagany")
@@ -159,6 +184,10 @@ def normalize_text(text):
 
 def recipes(request):
     query = request.GET.get("q", "").strip()
+
+    if len(query) > 100:
+        query = query[:100]
+
     results = []
     favorite_ids = []
     favorite_recipes = []
@@ -237,13 +266,15 @@ def health(request):
     return render(request, "main/health.html")
 
 
-# 🔥 NOWE API
 def calculate_bmi(request):
     if request.method == "POST":
         data = json.loads(request.body)
 
         height = float(data.get("height", 0))
         weight = float(data.get("weight", 0))
+
+        if height < 100 or height > 250 or weight < 30 or weight > 300:
+            return JsonResponse({"error": "Invalid data"})
 
         if height == 0:
             return JsonResponse({"error": "Invalid data"})
@@ -271,6 +302,10 @@ def calculate_calories(request):
         data = json.loads(request.body)
 
         weight = float(data.get("weight", 0))
+
+        if weight < 30 or weight > 300:
+            return JsonResponse({"error": "Invalid data"})
+
         goal = data.get("goal")
 
         base = weight * 24

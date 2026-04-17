@@ -57,7 +57,6 @@
     <p>Sprawdź składniki i ich wpływ na organizm</p>
 </section>
 
-<!-- 🔥 TWOJE KARTY ZOSTAJĄ BEZ ZMIAN -->
 <section class="categories text-center">
     <h2 class="mb-4">Kategorie składników</h2>
 
@@ -154,7 +153,6 @@
 
 </div>
 
-<!-- 🔥 JS – NAJWAŻNIEJSZE -->
 <script>
 const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
 
@@ -175,6 +173,13 @@ document.getElementById("bmi-form").addEventListener("submit", function(e) {
     })
     .then(r => r.json())
     .then(data => {
+
+        if (data.error) {
+            document.getElementById("bmi-result").innerHTML =
+                `<p style="color:#ef4444">Podaj poprawne dane</p>`;
+            return;
+        }
+
         let color = "#22c55e";
 
         if (data.category === "Niedowaga") color = "#f59e0b";
@@ -202,6 +207,13 @@ document.getElementById("cal-form").addEventListener("submit", function(e) {
     })
     .then(r => r.json())
     .then(data => {
+
+        if (data.error) {
+            document.getElementById("cal-result").innerHTML =
+                `<p style="color:#ef4444">Podaj poprawne dane</p>`;
+            return;
+        }
+
         document.getElementById("cal-result").innerHTML =
             `<p>Zapotrzebowanie: <strong style="color:#22c55e">${data.calories} kcal</strong></p>`;
     });
