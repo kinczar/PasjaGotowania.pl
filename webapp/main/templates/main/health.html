@@ -14,12 +14,12 @@
     }
 
     .hero {
-
         background: linear-gradient(135deg, #22c55e, #06b6d4);
         padding: 40px;
         border-radius: 12px;
         text-align: center;
         margin-bottom: 40px;
+        color: white;
     }
 
     .bmi-section {
@@ -27,6 +27,7 @@
         padding: 30px;
         background: rgba(30,41,59,0.8);
         border-radius: 12px;
+        color: white;
     }
 
     .btn-bmi {
@@ -112,71 +113,111 @@
 <section class="bmi-section text-center">
     <h2>Kalkulator BMI</h2>
 
-    <form method="POST" class="mt-3">
+    <form id="bmi-form" class="mt-3">
         {% csrf_token %}
 
-        <input type="number" name="height" placeholder="Wzrost (cm)" class="form-control mb-2">
-        <input type="number" name="weight" placeholder="Waga (kg)" class="form-control mb-3">
+        <input id="height" type="number" placeholder="Wzrost (cm)" class="form-control mb-2">
+        <input id="weight" type="number" placeholder="Waga (kg)" class="form-control mb-3">
 
-        <button type="submit" class="btn btn-bmi w-100">
+        <button class="btn btn-bmi w-100">
             Oblicz BMI
         </button>
     </form>
 
-    {% if bmi %}
-    <div class="mt-3">
-        <p>
-            Twoje BMI:
-            <strong style="
-                color:
-                {% if category == 'Prawidłowa' %}
-                    #22c55e
-                {% elif category == 'Nadwaga' %}
-                    #f59e0b
-                {% else %}
-                    #ef4444
-                {% endif %}
-            ">
-                {{ bmi }}
-            </strong>
-        </p>
-    </div>
-    {% endif %}
+    <div id="bmi-result" class="mt-3"></div>
 </section>
 
 <!-- KALORIE -->
 <section class="bmi-section text-center">
     <h2>Kalkulator kalorii</h2>
 
-    <form method="POST" class="mt-3">
+    <form id="cal-form" class="mt-3">
         {% csrf_token %}
 
-        <input type="number" name="cal_weight" placeholder="Waga (kg)" class="form-control mb-2">
+        <input id="cal_weight" type="number" placeholder="Waga (kg)" class="form-control mb-2">
 
-        <select name="goal" class="form-control mb-3">
+        <select id="goal" class="form-control mb-3">
             <option value="">Wybierz cel</option>
             <option value="lose">Zrzucenie wagi</option>
             <option value="maintain">Utrzymanie wagi</option>
             <option value="gain">Przybranie na wadze</option>
         </select>
 
-        <button type="submit" class="btn btn-bmi w-100">
+        <button class="btn btn-bmi w-100">
             Oblicz kalorie
         </button>
     </form>
 
-    {% if calories %}
-    <div class="mt-3">
-        <p>
-            Dzienne zapotrzebowanie:
-            <strong style="color:#22c55e;">
-                {{ calories }} kcal
-            </strong>
-        </p>
-    </div>
-    {% endif %}
+    <div id="cal-result" class="mt-3"></div>
 </section>
 
 </div>
+
+<script>
+const csrf = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+// BMI
+document.getElementById("bmi-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    fetch("/calculate-bmi/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf
+        },
+        body: JSON.stringify({
+            height: document.getElementById("height").value,
+            weight: document.getElementById("weight").value
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+
+        if (data.error) {
+            document.getElementById("bmi-result").innerHTML =
+                `<p style="color:#ef4444">Podaj poprawne dane</p>`;
+            return;
+        }
+
+        let color = "#22c55e";
+
+        if (data.category === "Niedowaga") color = "#f59e0b";
+        if (data.category === "Nadwaga" || data.category === "Otyłość") color = "#ef4444";
+
+        document.getElementById("bmi-result").innerHTML =
+            `<p>Twoje BMI: <strong style="color:${color}">${data.bmi}</strong> (${data.category})</p>`;
+    });
+});
+
+// KALORIE
+document.getElementById("cal-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    fetch("/calculate-calories/", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrf
+        },
+        body: JSON.stringify({
+            weight: document.getElementById("cal_weight").value,
+            goal: document.getElementById("goal").value
+        })
+    })
+    .then(r => r.json())
+    .then(data => {
+
+        if (data.error) {
+            document.getElementById("cal-result").innerHTML =
+                `<p style="color:#ef4444">Podaj poprawne dane</p>`;
+            return;
+        }
+
+        document.getElementById("cal-result").innerHTML =
+            `<p>Zapotrzebowanie: <strong style="color:#22c55e">${data.calories} kcal</strong></p>`;
+    });
+});
+</script>
 
 {% endblock %}

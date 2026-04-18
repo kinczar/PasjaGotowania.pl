@@ -17,5 +17,10 @@ urlpatterns = [
     path('logout', views.logout_user, name='logout_user'),
 
     path('health/', views.health, name='health'),
+
+    # 🔥 NOWE ENDPOINTY (TO JEST CAŁY SENS TASKA)
+    path('calculate-bmi/', views.calculate_bmi),
+    path('calculate-calories/', views.calculate_calories),
+
     path("post/<int:id>/", views.post_detail, name="detail"),
 ]

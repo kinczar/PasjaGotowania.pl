@@ -10,12 +10,14 @@ class PostForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Dodaj tytuł...'
+                'placeholder': 'Dodaj tytuł...',
+                'maxlength': 100
             }),
             'body': forms.Textarea(attrs={
                 'class': 'form-control',
                 'rows': 6,
-                'placeholder': 'Dodaj opis...'
+                'placeholder': 'Dodaj opis...',
+                'maxlength': 3000
             }),
             'post_type': forms.Select(attrs={
                 'class': 'form-select'
@@ -33,7 +35,8 @@ class PostForm(forms.ModelForm):
             self.fields['ingredients'] = forms.CharField(
                 widget=forms.Textarea(attrs={
                     'class': 'form-control',
-                    'placeholder': 'Składniki'
+                    'placeholder': 'Składniki',
+                    'maxlength': 2000
                 }),
                 required=True
             )
@@ -58,13 +61,20 @@ class PostForm(forms.ModelForm):
                 required=False,
                 widget=forms.TextInput(attrs={
                     'class': 'form-control',
-                    'placeholder': 'Czas przygotowania'
+                    'placeholder': 'Czas przygotowania',
+                    'maxlength': 100
                 })
             )
 
 
-#dodawanie komentarzy
+# dodawanie komentarzy
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ['content']
+
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'maxlength': 500
+            })
+        }

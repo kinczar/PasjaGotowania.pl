@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from cloudinary.models import CloudinaryField #strona do zdjęc w bazie danych
+from cloudinary.models import CloudinaryField  # strona do zdjęc w bazie danych
+
 
 class Post(models.Model):
-
     POST_TYPES = [
         ('recipe', 'Przepis'),
         ('question', 'Porada'),
@@ -14,30 +14,36 @@ class Post(models.Model):
         choices=POST_TYPES,
         default='recipe'
     )
-        
+
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField('Post title', max_length=100, null=False, blank=False)
     calories = models.IntegerField(null=True, blank=True)
     servings = models.IntegerField(null=True, blank=True)
     time = models.CharField(max_length=100, null=True, blank=True)
-    ingredients = models.TextField(null=True, blank=True)
-    body = models.TextField('Post body', null=False, blank=True)
+
+    # 🔥 DODANE LIMITY
+    ingredients = models.TextField(max_length=2000, null=True, blank=True)
+    body = models.TextField('Post body', max_length=3000, null=False, blank=True)
+
     published_at = models.DateTimeField(auto_now_add=True)
-    image = CloudinaryField('image', blank=True, null=True, folder='posts/') #nazwa specjalnego pola dla aplikacji do trzymanai zdjęć w bazie
+    image = CloudinaryField('image', blank=True, null=True, folder='posts/')
 
     likes = models.ManyToManyField(User, related_name='liked_posts', blank=True)
     saved_by = models.ManyToManyField(User, related_name='saved_posts', blank=True)
 
 
-#model komentarza
+# model komentarza
 class Comment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
+
+    # 🔥 DODANY LIMIT
+    content = models.TextField(max_length=500)
+
     created_at = models.DateTimeField(auto_now_add=True)
 
-    parent = models.ForeignKey( #odpowiadanie na komentarze
-        'self', 
+    parent = models.ForeignKey(
+        'self',
         on_delete=models.CASCADE,
         null=True,
         blank=True,
@@ -51,4 +57,3 @@ class Comment(models.Model):
 
     def is_reply(self):
         return self.parent is not None
-

@@ -1,7 +1,7 @@
 {% extends 'main/layout/clean_layout.html' %}
 {% load static %}
 
-{% block title %}Log in{% endblock %}
+{% block title %}Logowanie{% endblock %}
 
 {% block content %}
 
@@ -36,7 +36,7 @@ body {
 <div class="d-flex align-items-center justify-content-center px-4" style="height: 100vh">
     <div class="auth-box w-100" style="max-width: 400px">
 
-        <h2 class="text-center mb-4">Log in</h2>
+        <h2 class="text-center mb-4">Logowanie</h2>
 
         {% if messages %}
         <div class="alert alert-danger">
@@ -49,12 +49,12 @@ body {
         <form method="POST" action="/login">
             {% csrf_token %}
 
-            <input type="text" name="username" placeholder="Username" class="form-control mb-3" required>
+            <input type="text" name="username" placeholder="Nazwa użytkownika" class="form-control mb-3" required>
 
-            <input type="password" name="password" placeholder="Password" class="form-control mb-3" required>
+            <input type="password" name="password" placeholder="Hasło" class="form-control mb-3" required>
 
             <button type="submit" class="btn btn-auth w-100">
-                Log in
+                Zaloguj się
             </button>
         </form>
 
