@@ -173,7 +173,7 @@
                     {% if not comment.parent %}
 
                     <!-- KOMENTARZ -->
-                    <div class="mb-2 p-2 border-bottom" data-comment-id="{{ comment.id }}">
+                    <div class="mb-2 p-2 border-bottom comment" data-comment-id="{{ comment.id }}">
                         <div class="d-flex align-items-center gap-2 mb-1">
 
                             <a href="{% url 'user_profile' comment.author.id %}"
@@ -199,8 +199,10 @@
 
                             <div class="ms-auto d-flex gap-2">
 
-                                <button type="button" class="btn btn-sm like-comment-btn 
-    {% if user in comment.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}" data-id="{{ comment.id }}">
+                                <button type="button"
+                                    class="btn btn-sm like-comment-btn 
+                                    {% if user in comment.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                                    data-id="{{ comment.id }}">
 
                                     (<span class="like-count">{{ comment.likes.count }}</span>)
                                     <i class="fa-solid fa-thumbs-up"></i>
@@ -224,51 +226,50 @@
 
                             </div>
                         </div>
+                        <div class="replies">
+                            {% for reply in comment.replies.all %}
+                            <div class="ms-4 mt-2 p-2 border rounded bg-light" data-comment-id="{{ reply.id }}">
+
+                                <div class="d-flex align-items-center gap-2 mb-1">
+
+                                    <a href="{% url 'user_profile' reply.author.id %}"
+                                        style="text-decoration: none; color: inherit;">
+                                        <strong>{{ reply.author.username }}</strong>
+                                    </a>
+
+
+                                    {% if user == reply.author %}
+                                    <a href="{% url 'delete_comment' reply.id %}" class="text-secondary"
+                                        onclick="return confirm('Usunąć komentarz?')">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </a>
+                                    {% endif %}
+                                </div>
+
+                                <div class="d-flex align-items-start">
+
+                                    <div style="max-width: 80%;">
+                                        {{ reply.content }}
+                                    </div>
+
+                                    <div class="ms-auto d-flex gap-2">
+
+                                        <button type="button" class="btn btn-sm like-comment-btn 
+                    {% if user in reply.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}"
+                                            data-id="{{ reply.id }}">
+
+                                            (<span class="like-count">{{ reply.likes.count }}</span>)
+                                            <i class="fa-solid fa-thumbs-up"></i>
+                                        </button>
+
+                                    </div>
+                                </div>
+
+                            </div>
+                            {% endfor %}
+                        </div>
                     </div>
 
-                    <!-- ODPOWIEDZI -->
-                    {% for reply in comment.replies.all %}
-                    <div class="ms-4 mt-2 p-2 border rounded bg-light" data-comment-id="{{ reply.id }}">
-
-                        <div class="d-flex align-items-center gap-2 mb-1">
-
-                            <a href="{% url 'user_profile' comment.author.id %}"
-                                style="text-decoration: none; color: inherit;">
-                                <strong>{{ reply.author.username }}</strong>
-                            </a>
-
-                            {% if user == reply.author %}
-                            <a href="{% url 'delete_comment' reply.id %}" class="text-secondary"
-                                onclick="return confirm('Usunąć komentarz?')">
-                                <i class="fa-solid fa-trash"></i>
-                            </a>
-                            {% endif %}
-
-                        </div>
-
-                        <div class="d-flex align-items-start">
-
-                            <!-- TEKST -->
-                            <div style="max-width: 80%;">
-                                {{ reply.content }}
-                            </div>
-
-                            <!-- PRAWA STRONA -->
-                            <div class="ms-auto d-flex gap-2">
-
-                                <button type="button" class="btn btn-sm like-comment-btn 
-    {% if user in reply.likes.all %}btn-primary{% else %}btn-outline-primary{% endif %}" data-id="{{ reply.id }}">
-
-                                    <i class="fa-solid fa-thumbs-up"></i>
-                                    (<span class="like-count">{{ reply.likes.count }}</span>)
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-                    {% endfor %}
                     {% endif %}
                     {% endfor %}
 
@@ -458,39 +459,40 @@
     });
 
     //reply comment
-    document.querySelectorAll(".reply-btn").forEach(btn => {
-        btn.addEventListener("click", function () {
+    document.addEventListener("click", function (e) {
 
-            const commentId = this.dataset.id;
-            const username = this.dataset.username;
+        const btn = e.target.closest(".reply-btn");
+        if (!btn) return;
 
-            const post = this.closest(".card");
-            const input = post.querySelector(".parent_id");
-            const info = post.querySelector("#reply-info");
+        const commentId = btn.dataset.id;
+        const username = btn.dataset.username;
 
-            if (input.value == commentId) {
-                input.value = "";
-                info.classList.add("d-none");
-                info.innerText = "";
+        const post = btn.closest(".card");
+        const input = post.querySelector(".parent_id");
+        const info = post.querySelector("#reply-info");
 
-                this.classList.remove("btn-danger");
-                this.classList.add("btn-outline-secondary");
-            } else {
-                input.value = commentId;
+        if (input.value == commentId) {
+            input.value = "";
+            info.classList.add("d-none");
+            info.innerText = "";
 
-                post.querySelectorAll(".reply-btn").forEach(b => {
-                    b.classList.remove("btn-danger");
-                    b.classList.add("btn-outline-secondary");
-                });
+            btn.classList.remove("btn-danger");
+            btn.classList.add("btn-outline-secondary");
+        } else {
+            input.value = commentId;
 
-                this.classList.remove("btn-outline-secondary");
-                this.classList.add("btn-danger");
+            post.querySelectorAll(".reply-btn").forEach(b => {
+                b.classList.remove("btn-danger");
+                b.classList.add("btn-outline-secondary");
+            });
 
-                info.classList.remove("d-none");
-                info.innerHTML = `Odpowiadasz użytkownikowi <strong>${username}</strong>`;
-            }
+            btn.classList.remove("btn-outline-secondary");
+            btn.classList.add("btn-danger");
 
-        });
+            info.classList.remove("d-none");
+            info.innerHTML = `Odpowiadasz użytkownikowi <strong>${username}</strong>`;
+        }
+
     });
 
     //dodaj komentarz
@@ -512,15 +514,8 @@
                 },
                 body: `content=${encodeURIComponent(content)}&parent_id=${parentId}`
             })
-                .then(res => {
-                    if (!res.ok) {
-                        throw new Error("HTTP ERROR " + res.status);
-                    }
-                    return res.json();
-                })
+                .then(res => res.json())
                 .then(data => {
-
-                    console.log("DATA:", data);
 
                     if (data.error) return;
 
@@ -529,24 +524,51 @@
 
                     const newComment = document.createElement("div");
 
+                    // 🔥 ODPOWIEDŹ
                     if (data.parent_id) {
+
+                        const parent = commentsBox.querySelector(`.comment[data-comment-id="${data.parent_id}"]`);
+                        if (!parent) return;
+
+                        const repliesBox = parent.querySelector(".replies");
+
+                        const newComment = document.createElement("div");
                         newComment.className = "ms-4 mt-2 p-2 border rounded bg-light";
+                        newComment.setAttribute("data-comment-id", data.id);
 
-                        // znajdź komentarz nadrzędny
-                        const parent = commentsBox.querySelector(`[data-comment-id="${data.parent_id}"]`);
+                        newComment.innerHTML = `
+<div class="d-flex align-items-center gap-2 mb-1">
+    <strong>${data.author}</strong>
+</div>
 
-                        if (parent) {
-                            parent.after(newComment);
-                        } else {
-                            commentsBox.appendChild(newComment);
-                        }
+<div class="d-flex align-items-start">
 
-                    } else {
-                        newComment.className = "mb-2 p-2 border-bottom";
-                        commentsBox.appendChild(newComment);
+    <div style="max-width: 80%;">
+        ${data.content}
+    </div>
+
+    <div class="ms-auto d-flex gap-2">
+
+        <button type="button"
+            class="btn btn-sm btn-outline-primary like-comment-btn"
+            data-id="${data.id}">
+
+            (<span class="like-count">0</span>)
+            <i class="fa-solid fa-thumbs-up"></i>
+        </button>
+    </div>
+</div>
+`;
+
+                        repliesBox.appendChild(newComment);
                     }
+                    // 🔥 NOWY KOMENTARZ
+                    else {
 
-                    newComment.innerHTML = `
+                        newComment.className = "mb-2 p-2 border-bottom comment";
+                        newComment.setAttribute("data-comment-id", data.id);
+
+                        newComment.innerHTML = `
 <div class="d-flex align-items-center gap-2 mb-1">
     <strong>${data.author}</strong>
 </div>
@@ -558,13 +580,30 @@
 
     <div class="ms-auto d-flex gap-2">
 
-        <button type="button" class="btn btn-sm btn-outline-primary like-comment-btn" data-id="${data.id}">
+        <button type="button"
+            class="btn btn-sm btn-outline-primary like-comment-btn"
+            data-id="${data.id}">
+
             (<span class="like-count">0</span>)
             <i class="fa-solid fa-thumbs-up"></i>
         </button>
+
+        <button type="button"
+            class="btn btn-sm btn-outline-secondary reply-btn"
+            data-id="${data.id}"
+            data-username="${data.author}">
+
+            <i class="fa-solid fa-reply"></i>
+        </button>
+
     </div>
 </div>
+
+<div class="replies"></div>
 `;
+
+                        commentsBox.appendChild(newComment);
+                    }
 
                     textarea.value = "";
                     this.querySelector(".parent_id").value = "";
@@ -573,9 +612,6 @@
                     info.classList.add("d-none");
                     info.innerText = "";
 
-                })
-                .catch(err => {
-                    console.error("BŁĄD:", err);
                 });
 
         });

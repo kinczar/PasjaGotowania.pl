@@ -135,17 +135,19 @@ def add_comment(request, post_id):
         content = request.POST.get("content")
         parent_id = request.POST.get("parent_id")
 
+        parent = None
+        if parent_id:
+            parent = Comment.objects.get(id=parent_id)
+
         comment = Comment.objects.create(
             post=post,
             author=request.user,
-            content=content
+            content=content,
+            parent=parent   # 🔥 OD RAZU TUTAJ
         )
 
-        if parent_id:
-            comment.parent = Comment.objects.get(id=parent_id)
-            comment.save()
-
         return JsonResponse({
+            "id": comment.id,
             "content": comment.content,
             "author": comment.author.username,
             "parent_id": parent_id
