@@ -22,9 +22,6 @@
 
     <title>{% block title %}Pasja Gotowania{% endblock %}</title>
 
-    {% if request.path|slice:":6" != "/forum" %}
-    <link rel="stylesheet" href="{% static 'forum/forum.css' %}">
-    {% endif %}
     <link rel="stylesheet" href="{% static 'main/css/main.css' %}">
 
     <style>
