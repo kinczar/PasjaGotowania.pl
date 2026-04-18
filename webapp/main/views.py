@@ -17,10 +17,6 @@ from .models import Recipe
 def index(request):
     return render(request, 'main/index.html')
 
-def about(request):
-    return render(request, 'main/about.html')
-
-
 def login_user(request):
     if request.user.is_authenticated:
         return redirect('home')
